@@ -6,6 +6,7 @@
     --color-primary: #572919;
     --color-brand: #733F2D;
     --color-secondary: #A67153;
+    --color-transparent: #d4a88f33;
 
     --color-accent: #D99962;
     --color-accent-light: #D99F59;
@@ -197,7 +198,10 @@ body {
 }
 
 /* Main title */
-
+.text-brand{
+    color: var(--color-brand);
+    font-weight: bold;
+}
 .hero-title {
     font-family: var(--font-heading);
     font-size: clamp(38px, 4.5vw, 56px);
@@ -396,6 +400,19 @@ body {
     height: 1px;
     background-color: var(--color-accent);
 }
+
+/* =====================================
+   ABOUT SECTION
+===================================== */
+.about-section {
+    background-color: var(--color-transparent);
+    min-height: auto;
+    display: flex;
+    align-items: center;
+    padding: 90px 0;
+    overflow: hidden;
+}
+
 
 /* =====================================
    RESPONSIVE
