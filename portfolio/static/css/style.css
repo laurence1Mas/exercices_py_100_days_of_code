@@ -436,6 +436,49 @@ body {
     overflow: hidden;
 }
 
+.about-image-column {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.about-image-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    padding: 0 16px 16px 0;
+}
+
+.about-image-wrapper::before {
+    position: absolute;
+    top: 16px;
+    right: 0;
+    bottom: 0;
+    left: 16px;
+    border: 2px solid var(--color-accent);
+    border-radius: 48% 48% var(--radius) var(--radius);
+    content: "";
+}
+
+.about-profile-image {
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    object-position: center top;
+    border-radius: 48% 48% var(--radius) var(--radius);
+    box-shadow: 0 16px 40px rgba(74, 41, 30, 0.16);
+}
+
+.technologie-section{
+    background-color: var(--color-surface);
+    min-height: auto;
+    display: flex;
+    align-items: center;
+    padding: 90px 0;
+    overflow: hidden;
+}
 footer {
     background-color: var(--color-brand);
     color: var(--color-surface);
