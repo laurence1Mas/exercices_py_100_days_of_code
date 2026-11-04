@@ -3,6 +3,7 @@
 ===================================== */
 
 :root {
+    --header-height: 82px;
     --color-primary: #572919;
     --color-brand: #733F2D;
     --color-secondary: #A67153;
@@ -41,13 +42,19 @@ body {
     background-color: var(--color-background);
     border-bottom: 1px solid var(--color-border);
     width: 100%;
-    position: relative;
+    position: fixed;
+    top: 0;
+    left: 0;
     z-index: 1000;
 }
 
 .site-header .navbar {
-    min-height: 82px;
+    min-height: var(--header-height);
     padding: 16px 0;
+}
+
+.main-content {
+    padding-top: var(--header-height);
 }
 
 /* BRAND */
@@ -149,7 +156,23 @@ body {
 .custom-toggler:focus {
     box-shadow: 0 0 0 2px rgba(115, 63, 45, 0.15);
 }
+.header-section{
+    background-color: var(--color-background);
+    padding: 90px 0;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+.header-section .text-title{
+    font-family: var(--font-heading);
+    font-size: clamp(38px, 4.5vw, 56px);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -2px;
 
+    color: var(--color-text);
+    margin-bottom: 16px;
+}
 /* =====================================
    HERO SECTION
 ===================================== */
@@ -413,6 +436,12 @@ body {
     overflow: hidden;
 }
 
+footer {
+    background-color: var(--color-brand);
+    color: var(--color-surface);
+    padding: 20px 0;
+    text-align: center;
+}
 
 /* =====================================
    RESPONSIVE
