@@ -1,0 +1,33 @@
+:root {
+    --bs-primary: #733F2D;
+    --bs-primary-rgb: 115, 63, 45;
+
+    --bs-secondary: #A67153;
+    --bs-secondary-rgb: 166, 113, 83;
+
+    --bs-warning: #D99962;
+    --bs-warning-rgb: 217, 153, 98;
+
+    --bs-info: #D99F59;
+    --bs-info-rgb: 217, 159, 89;
+
+    --bs-light: #F2F2F2;
+    --bs-light-rgb: 242, 242, 242;
+
+    --bs-dark: #4A291E;
+    --bs-dark-rgb: 74, 41, 30;
+}
+
+.navbar-brand .brand-logo {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border: 2px solid var(--bs-light);
+    border-radius: 50%;
+    background-color: var(--bs-light);
+}
+
+.navbar-brand .brand-name {
+    color: var(--bs-light);
+    letter-spacing: 0.02em;
+}
