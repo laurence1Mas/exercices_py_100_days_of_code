@@ -480,13 +480,113 @@ body {
     box-shadow: 0 16px 40px rgba(74, 41, 30, 0.16);
 }
 
-.technologie-section{
-    background-color: var(--color-surface);
+.technologie-section {
+    background-color: var(--color-background);
     min-height: auto;
+    padding: 90px 0;
+}
+
+.tech-section-title {
+    margin: 0;
+    color: var(--color-text);
+    font-family: var(--font-heading);
+    font-size: clamp(30px, 3.5vw, 42px);
+    font-weight: 700;
+    letter-spacing: -1.5px;
+}
+
+.tech-section-description {
+    max-width: 440px;
+    color: var(--color-secondary);
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.tech-card {
+    display: flex;
+    flex-direction: column;
+    padding: 22px 18px 16px;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    box-shadow: 0 8px 24px rgba(74, 41, 30, 0.04);
+    transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.tech-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 30px rgba(74, 41, 30, 0.10);
+}
+
+.tech-card-heading {
     display: flex;
     align-items: center;
-    padding: 90px 0;
-    overflow: hidden;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.tech-icon {
+    display: inline-flex;
+    width: 34px;
+    height: 34px;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 34px;
+    color: var(--color-brand);
+    background-color: #FCECE6;
+    border-radius: 6px;
+}
+
+.tech-category {
+    color: var(--color-secondary);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.7px;
+}
+
+.tech-card h3 {
+    min-height: 48px;
+    margin: 0 0 10px;
+    color: var(--color-text);
+    font-family: var(--font-heading);
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.35;
+}
+
+.tech-card p {
+    min-height: 68px;
+    margin-bottom: 16px;
+    color: var(--color-secondary);
+    font-size: 12px;
+    line-height: 1.65;
+}
+
+.tech-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-bottom: 20px;
+}
+
+.tech-tag {
+    padding: 5px 7px;
+    color: var(--color-brand);
+    background-color: #FCECE6;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.tech-card-footer {
+    margin-top: auto;
+    padding-top: 12px;
+    color: var(--color-secondary);
+    border-top: 1px solid var(--color-border);
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
 }
 footer {
     background-color: var(--color-brand);
