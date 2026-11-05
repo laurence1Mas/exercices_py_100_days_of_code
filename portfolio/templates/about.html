@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laure-Mak</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- fontawesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
+    <!-- les fichiers CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+    <header class="site-header">
+        <nav class="navbar navbar-expand-lg">
+            <div class="container">
+
+                <!-- Brand -->
+                <a class="navbar-brand brand-link" href="{{ url_for('home') }}">
+
+                    <img src="{{ url_for('static', filename='images/favicon.png') }}" alt="Logo Laure Mak"
+                        class="brand-logo">
+
+                    <span class="brand-name">Laure-Mak</span>
+                </a>
+
+                <!-- Mobile toggle -->
+                <button class="navbar-toggler custom-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Navigation -->
+                <div class="collapse navbar-collapse" id="navbarNav">
+
+                    <ul class="navbar-nav ms-auto align-items-lg-center">
+
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{{ url_for('home') }}" aria-current="page">
+                                Home
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('about') }}">
+                                About
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('portfolio') }}">
+                                Portfolio
+                            </a>
+                        </li>
+
+                    </ul>
+
+                    <!-- Contact button -->
+                    <a href="{{ url_for('contact') }}" class="btn btn-contact ms-lg-4">
+                        Let's Talk
+                        <i class="fa-solid fa-arrow-up-right-from-square ms-2"></i>
+                    </a>
+
+                </div>
+            </div>
+        </nav>
+    </header>
+    <main class="main-content">
+        <section class="header-section ">
+            <div class="container">
+                <h1 class="display-4 text-title">About Me</h1>
+                <p class="lead">Get to know more about my background and journey.</p>
+            </div>
+        </section>
+
+        <section class="about-section">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="about-intro text-start mb-5">
+                            <span class="hero-eyebrow">
+                                <span class="eyebrow-line"></span>
+                                ALL ABOUT ME
+                            </span>
+                        </div>
+
+                        <div class="row g-5 align-items-center">
+                            <div class="col-lg-6 about-image-column">
+                                <div class="about-image-wrapper">
+                                    <img src="{{ url_for('static', filename='images/profile.jpg') }}"
+                                        alt="Portrait de Laurence Masika" class="about-profile-image">
+                                </div>
+                            </div>
+                            <div class="col-lg-6 p-4">
+                                <p>
+                                    I am a <span class="text-brand">passionate full-stack web developer</span> with a
+                                    deliberate emphasis on Backend Engineering,
+                                    software architecture, and distributed systems. My craft is anchored in developing
+                                    reliable digital infrastructures
+                                    where data security, optimized queries, and clean OOP abstractions meet seamlessly.
+                                </p>
+                                <p class="mt-3 text-muted">
+                                    My path in technology was forged through a fascination with how hidden server
+                                    machinery powers vital services across healthcare, cross-border trade, and community
+                                    platforms. Rather than merely stringing frameworks together, I design resilient
+                                    relational schemas, secure
+                                    authentication mechanisms, and extensible RESTful APIs that adapt gracefully as user
+                                    demand expands
+                                </p>
+                                <div class="d-flex flex-column flex-md-row mt-4">
+                                    <div class="left">
+                                        <h5> <i class="fas fa-project-diagram"></i> Architecture-First Thinking</h5>
+                                        <p class="text-muted">
+                                            Prioritizing modular domain design, clean code boundaries, and
+                                            ACID-compliant transactional flows.
+                                        </p>
+                                    </div>
+                                    <div class="right ms-4">
+                                        <h5> <i class="fas fa-users"></i> Community Leadership</h5>
+                                        <p class="text-muted">
+                                            Empowering local developers through technical workshops, API masterclasses,
+                                            and hands-on hackathons.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="technologie-section">
+            <div class="container">
+                <div class="row justify-content-between align-items-end g-4 mb-4">
+                    <div class="col-lg-6">
+                        <div class="about-intro text-start">
+                            <span class="hero-eyebrow">
+                                <span class="eyebrow-line"></span>
+                                02 / MY STACK
+                            </span>
+                            <h2 class="tech-section-title">Technologies I Work With</h2>
+                        </div>
+                    </div>
+                    <div class="col-lg-5">
+                        <p class="tech-section-description mb-0">
+                            A balanced toolkit focused on reliable backend systems, thoughtful data design,
+                            and responsive user experiences.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-lg-3 col-md-6">
+                        <article class="tech-card h-100">
+                            <div class="tech-card-heading">
+                                <span class="tech-icon"><i class="fas fa-server" aria-hidden="true"></i></span>
+                                <span class="tech-category">01 / SERVER SIDE</span>
+                            </div>
+                            <h3>Backend Development</h3>
+                            <p>Building reliable application logic, APIs, and maintainable server-side services.</p>
+                            <div class="tech-tags" aria-label="Backend technologies">
+                                <span class="tech-tag">Python</span>
+                                <span class="tech-tag">Flask</span>
+                                <span class="tech-tag">REST APIs</span>
+                                <span class="tech-tag">OOP</span>
+                            </div>
+                            <span class="tech-card-footer">APPLICATION LOGIC</span>
+                        </article>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <article class="tech-card h-100">
+                            <div class="tech-card-heading">
+                                <span class="tech-icon"><i class="fas fa-laptop-code" aria-hidden="true"></i></span>
+                                <span class="tech-category">02 / USER INTERFACE</span>
+                            </div>
+                            <h3>Frontend</h3>
+                            <p>Creating accessible, responsive interfaces that work smoothly across devices.</p>
+                            <div class="tech-tags" aria-label="Frontend technologies">
+                                <span class="tech-tag">HTML</span>
+                                <span class="tech-tag">CSS</span>
+                                <span class="tech-tag">JavaScript</span>
+                                <span class="tech-tag">Bootstrap</span>
+                            </div>
+                            <span class="tech-card-footer">RESPONSIVE DESIGN</span>
+                        </article>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <article class="tech-card h-100">
+                            <div class="tech-card-heading">
+                                <span class="tech-icon"><i class="fas fa-database" aria-hidden="true"></i></span>
+                                <span class="tech-category">03 / DATA</span>
+                            </div>
+                            <h3>Databases</h3>
+                            <p>Structuring relational data and writing careful queries with integrity in mind.</p>
+                            <div class="tech-tags" aria-label="Database skills">
+                                <span class="tech-tag">SQL</span>
+                                <span class="tech-tag">Data modeling</span>
+                                <span class="tech-tag">ACID</span>
+                                <span class="tech-tag">Query design</span>
+                            </div>
+                            <span class="tech-card-footer">RELIABLE DATA</span>
+                        </article>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <article class="tech-card h-100">
+                            <div class="tech-card-heading">
+                                <span class="tech-icon"><i class="fas fa-sitemap" aria-hidden="true"></i></span>
+                                <span class="tech-category">04 / ENGINEERING</span>
+                            </div>
+                            <h3>Architecture &amp; Tools</h3>
+                            <p>Applying clear software structure and collaborative practices from design to delivery.</p>
+                            <div class="tech-tags" aria-label="Engineering practices and tools">
+                                <span class="tech-tag">Git</span>
+                                <span class="tech-tag">API design</span>
+                                <span class="tech-tag">Clean code</span>
+                                <span class="tech-tag">OOP</span>
+                            </div>
+                            <span class="tech-card-footer">THOUGHTFUL ENGINEERING</span>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="journey-section">
+            <div class="container">
+                <div class="row justify-content-between align-items-end g-4 mb-5">
+                    <div class="col-lg-6">
+                        <span class="hero-eyebrow">
+                            <span class="eyebrow-line"></span>
+                            03 / MY JOURNEY
+                        </span>
+                        <h2 class="tech-section-title">My Journey &amp; Milestones</h2>
+                    </div>
+                    <div class="col-lg-5">
+                        <p class="journey-intro mb-0">
+                            A path shaped by curiosity, thoughtful engineering, and sharing knowledge with others.
+                        </p>
+                    </div>
+                </div>
+
+                <ol class="journey-list">
+                    <li class="journey-item">
+                        <span class="journey-marker" aria-hidden="true">01</span>
+                        <article class="journey-card">
+                            <span class="journey-stage">FOUNDATIONS</span>
+                            <h3>Understanding the systems behind the web</h3>
+                            <p>
+                                My curiosity about the technology powering essential services led me to explore
+                                how applications, data, and backend systems fit together.
+                            </p>
+                        </article>
+                    </li>
+                    <li class="journey-item">
+                        <span class="journey-marker" aria-hidden="true">02</span>
+                        <article class="journey-card">
+                            <span class="journey-stage">FULL-STACK &amp; BACKEND ENGINEERING</span>
+                            <h3>Building reliable, maintainable applications</h3>
+                            <p>
+                                I focus on backend engineering, relational data, secure APIs, and software
+                                architecture, while creating responsive interfaces for complete web experiences.
+                            </p>
+                        </article>
+                    </li>
+                    <li class="journey-item">
+                        <span class="journey-marker" aria-hidden="true">03</span>
+                        <article class="journey-card">
+                            <span class="journey-stage">COMMUNITY &amp; KNOWLEDGE SHARING</span>
+                            <h3>Helping other developers grow</h3>
+                            <p>
+                                I enjoy supporting local developers through technical workshops, API masterclasses,
+                                and hands-on hackathons.
+                            </p>
+                        </article>
+                    </li>
+                </ol>
+            </div>
+        </section>
+    </main>
+    <footer class="text-light py-5">
+        <div class="container text-center">
+            <p class="mb-0">&copy; 2024 Laure-Mak. All rights reserved.</p>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
