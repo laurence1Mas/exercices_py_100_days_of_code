@@ -726,19 +726,15 @@ body {
     content: "";
 }
 
-.project-preview-health {
+.project-preview-idav {
     background-color: #FCE7E0;
 }
 
-.project-preview-global {
+.project-preview-afrix {
     background-color: #F9E2DC;
 }
 
-.project-preview-hotel {
-    background-color: #FBE8E2;
-}
-
-.project-preview-talent {
+.project-preview-umojafund {
     background-color: #F9E1DB;
 }
 
@@ -788,8 +784,7 @@ body {
     width: 48%;
 }
 
-.preview-metrics,
-.preview-profiles {
+.preview-metrics {
     display: flex;
     gap: 8px;
 }
@@ -800,50 +795,6 @@ body {
     background-color: rgba(217, 153, 98, 0.18);
     border: 1px solid rgba(166, 113, 83, 0.12);
     border-radius: 3px;
-}
-
-.preview-route {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.preview-route span {
-    width: 12px;
-    height: 12px;
-    background-color: rgba(166, 113, 83, 0.22);
-    border-radius: 50%;
-}
-
-.preview-route span:nth-child(2) {
-    width: 48px;
-    height: 2px;
-    border-radius: 0;
-}
-
-.preview-calendar {
-    display: grid;
-    width: 66px;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 4px;
-}
-
-.preview-calendar span {
-    height: 9px;
-    background-color: rgba(166, 113, 83, 0.2);
-    border-radius: 2px;
-}
-
-.preview-calendar span:nth-child(3n) {
-    background-color: rgba(217, 153, 98, 0.5);
-}
-
-.preview-profiles span {
-    width: 20px;
-    height: 20px;
-    background-color: rgba(166, 113, 83, 0.24);
-    border: 2px solid rgba(255, 248, 246, 0.9);
-    border-radius: 50%;
 }
 
 .project-card-body {
