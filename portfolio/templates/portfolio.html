@@ -47,7 +47,7 @@
                     <ul class="navbar-nav ms-auto align-items-lg-center">
 
                         <li class="nav-item">
-                            <a class="nav-link active" href="{{ url_for('home') }}" aria-current="page">
+                            <a class="nav-link" href="{{ url_for('home') }}">
                                 Home
                             </a>
                         </li>
@@ -59,7 +59,7 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('portfolio') }}">
+                            <a class="nav-link active" href="{{ url_for('portfolio') }}" aria-current="page">
                                 Portfolio
                             </a>
                         </li>
@@ -76,7 +76,164 @@
             </div>
         </nav>
     </header>
-    <main></main>
+    <main class="main-content">
+        <section class="header-section">
+            <div class="container">
+                <h1 class="display-4 text-title">Portfolio</h1>
+                <p class="lead">Selected projects showcasing my work and approach to building web applications.</p>
+            </div>
+        </section>
+
+        <section class="projects-section">
+            <div class="container">
+                <div class="row justify-content-between align-items-end g-4 mb-4">
+                    <div class="col-md-6">
+                        <span class="hero-eyebrow">
+                            <span class="eyebrow-line"></span>
+                            04 / PORTFOLIO
+                        </span>
+                        <h2 class="tech-section-title">Some Things I’ve Built</h2>
+                    </div>
+                    <div class="col-lg-5">
+                        <p class="projects-intro mb-0">
+                            Selected real-world applications showcasing backend architecture, thoughtful data
+                            modeling, and practical user experiences.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <article class="project-card h-100">
+                            <div class="project-preview project-preview-health" aria-hidden="true">
+                                <div class="project-preview-top">
+                                    <span>HEALTHCARE / MANAGEMENT</span>
+                                    <i class="fa-solid fa-shield-heart"></i>
+                                </div>
+                                <div class="project-preview-window">
+                                    <span class="preview-line preview-line-short"></span>
+                                    <span class="preview-line"></span>
+                                    <div class="preview-metrics">
+                                        <span></span><span></span><span></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="project-card-body">
+                                <span class="project-type"><i class="fa-solid fa-circle me-2"></i>HEALTHCARE PLATFORM</span>
+                                <h3>IDAV RDC</h3>
+                                <p>
+                                    A digital healthcare and clinic management platform designed to bring medical
+                                    records, inventory, and care coordination into one secure, reliable workflow.
+                                </p>
+                                <div class="project-tags" aria-label="Project focus">
+                                    <span>Healthcare</span><span>Backend</span><span>REST APIs</span><span>Data security</span>
+                                </div>
+                                <div class="project-card-footer">
+                                    <span>Healthcare management</span>
+                                    <span>Backend &amp; data</span>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+
+                    <div class="col-md-6">
+                        <article class="project-card h-100">
+                            <div class="project-preview project-preview-global" aria-hidden="true">
+                                <div class="project-preview-top">
+                                    <span>BUSINESS / MOBILITY</span>
+                                    <i class="fa-solid fa-arrow-trend-up"></i>
+                                </div>
+                                <div class="project-preview-window">
+                                    <span class="preview-line preview-line-medium"></span>
+                                    <div class="preview-route"><span></span><span></span><span></span></div>
+                                    <span class="preview-line preview-line-short"></span>
+                                </div>
+                            </div>
+                            <div class="project-card-body">
+                                <span class="project-type"><i class="fa-solid fa-circle me-2"></i>BUSINESS WEB APPLICATION</span>
+                                <h3>Afrik Global</h3>
+                                <p>
+                                    A business and transformation platform for cross-border mobility and immigration
+                                    services, designed to make complex client workflows easier to manage.
+                                </p>
+                                <div class="project-tags" aria-label="Project focus">
+                                    <span>Web application</span><span>Client workflows</span><span>Responsive UI</span><span>APIs</span>
+                                </div>
+                                <div class="project-card-footer">
+                                    <span>Business services</span>
+                                    <span>Workflow design</span>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+
+                    <div class="col-md-6">
+                        <article class="project-card h-100">
+                            <div class="project-preview project-preview-hotel" aria-hidden="true">
+                                <div class="project-preview-top">
+                                    <span>HOSPITALITY / BOOKINGS</span>
+                                    <i class="fa-solid fa-calendar-check"></i>
+                                </div>
+                                <div class="project-preview-window">
+                                    <div class="preview-calendar">
+                                        <span></span><span></span><span></span><span></span>
+                                        <span></span><span></span><span></span><span></span>
+                                    </div>
+                                    <span class="preview-line preview-line-medium"></span>
+                                </div>
+                            </div>
+                            <div class="project-card-body">
+                                <span class="project-type"><i class="fa-solid fa-circle me-2"></i>BOOKING / MANAGEMENT</span>
+                                <h3>Hotel Management Platform</h3>
+                                <p>
+                                    An end-to-end hospitality platform for handling bookings, room availability,
+                                    guest records, and billing through a streamlined management workflow.
+                                </p>
+                                <div class="project-tags" aria-label="Project focus">
+                                    <span>Bookings</span><span>Availability</span><span>Guest records</span><span>Management</span>
+                                </div>
+                                <div class="project-card-footer">
+                                    <span>Hospitality platform</span>
+                                    <span>Operations</span>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <article class="project-card h-100">
+                            <div class="project-preview project-preview-talent" aria-hidden="true">
+                                <div class="project-preview-top">
+                                    <span>TALENT / NETWORK</span>
+                                    <i class="fa-solid fa-people-group"></i>
+                                </div>
+                                <div class="project-preview-window">
+                                    <div class="preview-profiles"><span></span><span></span><span></span></div>
+                                    <span class="preview-line preview-line-medium"></span>
+                                    <span class="preview-line preview-line-short"></span>
+                                </div>
+                            </div>
+                            <div class="project-card-body">
+                                <span class="project-type"><i class="fa-solid fa-circle me-2"></i>TALENT NETWORK</span>
+                                <h3>Findin — Talent &amp; Opportunities</h3>
+                                <p>
+                                    A community and talent-discovery platform connecting people with opportunities
+                                    and helping strengthen regional technology networks.
+                                </p>
+                                <div class="project-tags" aria-label="Project focus">
+                                    <span>Talent discovery</span><span>Community</span><span>Opportunities</span><span>Web platform</span>
+                                </div>
+                                <div class="project-card-footer">
+                                    <span>Talent &amp; community</span>
+                                    <span>Platform design</span>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
     <footer class="text-light py-5">
         <div class="container text-center">
             <p class="mb-0">&copy; 2024 Laure-Mak. All rights reserved.</p>
