@@ -28,8 +28,7 @@ code_morse ={
 }
 # fonction pour convertir le texte en code morse
 def morse_code(text):
-    """
-    Convertit un texte en code morse.
+    """ Convertit un texte en code morse.
     """
     text = input("entrer un mot: ").upper()
     morse_text = ""
