@@ -12,7 +12,7 @@ image = Image.open(script_dir / "laure-img.jpg")
 draw = ImageDraw.Draw(image)
 
 # 3. Ajouter un texte sur l'image
-draw.text((20, 20), "Laurence-Mak", fill="white")
+draw.text((20, 20), "laurence-Mak", fill="white")
 
 # 4. Enregistrer la nouvelle image
 image.save(script_dir / "watermarked_photo.jpg")
