@@ -1,10 +1,10 @@
 
-from turtle import Screen
+from tkinter import TclError
+from turtle import Screen, Terminator
 from paddle import Paddle
 from ball import Ball
 from brick import Brick
 from scoreboard import Scoreboard
-import time
 
 # Create the screen
 screen = Screen()
@@ -19,14 +19,21 @@ ball = Ball()
 scoreboard = Scoreboard()
 
 # Create bricks
+
+# Create bricks
 bricks = []
 
-for row in range(3):
-    for column in range(10):
-        x = -315 + column * 70
-        y = 200 - row * 35
+brick_colors = ["red", "orange", "yellow", "green", "blue"]
 
-        brick = Brick((x, y))
+for row in range(5):
+    for column in range(10):
+
+        x = -315 + column * 70
+        y = 220 - row * 35
+
+        color = brick_colors[row]
+
+        brick = Brick((x, y), color)
         bricks.append(brick)
 
 # Keyboard controls
@@ -34,12 +41,40 @@ screen.listen()
 screen.onkey(paddle.go_right, "Right")
 screen.onkey(paddle.go_left, "Left")
 
-# Main game loop
 game_is_on = True
+timer_id = None
+window = screen.getcanvas().winfo_toplevel()
 
-while game_is_on:
-    time.sleep(0.1)
-    screen.update()
+
+def close_game():
+    global game_is_on, timer_id
+
+    game_is_on = False
+    if timer_id is not None:
+        window.after_cancel(timer_id)
+        timer_id = None
+    screen.bye()
+
+
+window.protocol("WM_DELETE_WINDOW", close_game)
+
+
+def game_loop():
+    global timer_id
+
+    if not game_is_on:
+        return
+
+    timer_id = None
+    try:
+        screen.update()
+    except (Terminator, TclError):
+        if game_is_on:
+            raise
+        return
+
+    if not game_is_on:
+        return
 
     # Move the ball
     ball.move()
@@ -61,4 +96,8 @@ while game_is_on:
         ball.goto(0, 0)
         ball.bounce_y()
 
-screen.exitonclick()
+    timer_id = window.after(100, game_loop)
+
+
+game_loop()
+screen.mainloop()
