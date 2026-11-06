@@ -2,17 +2,19 @@ from flask import Flask, flash, redirect, render_template, request, url_for
 
 from models import Task, db
 
+# Initialize Flask app and configure database
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "dev-key-change-me"
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///todo.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
+# Initialize SQLAlchemy with the Flask app
 db.init_app(app)
 
 with app.app_context():
     db.create_all()
 
-
+# Define routes for the to-do list application
 @app.get("/")
 def index():
     tasks = Task.query.order_by(Task.id.desc()).all()
@@ -64,6 +66,6 @@ def delete_task(task_id):
     flash("Tâche supprimée.", "success")
     return redirect(url_for("index"))
 
-
+# Run the Flask app
 if __name__ == "__main__":
     app.run(debug=True)
