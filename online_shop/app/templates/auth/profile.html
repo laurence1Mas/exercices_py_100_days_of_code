@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Mon profil - Boutique en ligne{% endblock %}
+
+{% block content %}
+<h1 class="h2">Mon profil</h1>
+<dl class="row mt-4">
+    <dt class="col-sm-3">Nom</dt>
+    <dd class="col-sm-9">{{ current_user.name }}</dd>
+    <dt class="col-sm-3">Adresse e-mail</dt>
+    <dd class="col-sm-9">{{ current_user.email }}</dd>
+    <dt class="col-sm-3">Rôle</dt>
+    <dd class="col-sm-9">{{ current_user.role }}</dd>
+</dl>
+{% endblock %}
