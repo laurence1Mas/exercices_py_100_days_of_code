@@ -34,4 +34,16 @@ def create_app():
     def home():
         return render_template("index.html")
 
+    @app.get("/univers")
+    def univers():
+        return render_template("univers.html")
+
+    @app.get("/contact")
+    def contact():
+        return render_template("contact.html")
+
+    @app.get("/shop")
+    def shop():
+        return render_template("shop.html")
+
     return app

@@ -1,28 +1,129 @@
 {% extends "base.html" %}
 
-{% block title %}Accueil - Boutique en ligne{% endblock %}
+{% block title %}Atelier — de belles trouvailles, bientôt{% endblock %}
 
 {% block content %}
-<section class="py-5 text-center">
-    <div class="row py-lg-4">
-        <div class="col-lg-8 col-md-10 mx-auto">
-            <h1 class="display-5 fw-bold">Bienvenue dans notre boutique</h1>
-            <p class="lead text-body-secondary mt-3">
-                Une boutique en ligne construite avec Flask. Créez un compte
-                pour accéder à votre espace client.
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6 hero-copy">
+                <p class="eyebrow"><span class="eyebrow-line"></span> LE PLAISIR DES BELLES CHOSES</p>
+                <h1>Le quotidien mérite<br>un peu <em>plus de beau.</em></h1>
+                <p class="hero-description">
+                    Atelier prépare une sélection d’objets choisis avec soin,
+                    pour apporter une touche d’inspiration à chaque journée.
+                </p>
+                <div class="hero-actions">
+                    {% if current_user.is_authenticated %}
+                    <a class="btn btn-terracotta" href="{{ url_for('auth.profile') }}">
+                        Découvrir mon espace <span aria-hidden="true">↗</span>
+                    </a>
+                    {% else %}
+                    <a class="btn btn-terracotta" href="{{ url_for('auth.register') }}">
+                        Rejoindre l’aventure <span aria-hidden="true">↗</span>
+                    </a>
+                    <a class="hero-login-link" href="{{ url_for('auth.login') }}">
+                        Déjà membre ? Se connecter
+                    </a>
+                    {% endif %}
+                </div>
+                <div class="hero-note">
+                    <span class="note-dot" aria-hidden="true"></span>
+                    <span>La boutique se prépare, votre espace client est déjà ouvert.</span>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="hero-visual">
+                    <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&amp;fit=crop&amp;w=1200&amp;q=85"
+                        alt="Intérieur lumineux d’une boutique, avec des portants et des pièces soigneusement présentées"
+                        fetchpriority="high">
+                    <div class="visual-caption">
+                        <span class="caption-kicker">BIENTÔT CHEZ ATELIER</span>
+                        <span class="caption-title">Des choix faits avec intention.</span>
+                    </div>
+                    <div class="visual-stamp" aria-label="Choisi avec soin">
+                        <span aria-hidden="true">✳</span>
+                        <span>CHOISI<br>AVEC SOIN</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="univers-section" id="univers">
+    <div class="container">
+        <div class="section-heading">
+            <div>
+                <p class="eyebrow"><span class="eyebrow-line"></span> UN REGARD, PLUSIEURS INSPIRATIONS</p>
+                <h2>De belles choses,<br class="d-sm-none"> tout simplement.</h2>
+            </div>
+            <p class="section-intro">
+                Nous préparons différents univers pour vous aider à trouver
+                ce petit quelque chose qui change tout.
             </p>
-            {% if current_user.is_authenticated %}
-                <a class="btn btn-primary my-2" href="{{ url_for('auth.profile') }}">
-                    Accéder à mon profil
+        </div>
+        <div class="row g-3 universe-grid">
+            <div class="col-md-4">
+                <article class="universe-card universe-card-sand">
+                    <span class="universe-number">01</span>
+                    <span class="universe-symbol" aria-hidden="true">⌂</span>
+                    <div>
+                        <h3>La maison</h3>
+                        <p>Des détails qui font du bien.</p>
+                    </div>
+                    <span class="coming-soon">À VENIR</span>
+                </article>
+            </div>
+            <div class="col-md-4">
+                <article class="universe-card universe-card-rose">
+                    <span class="universe-number">02</span>
+                    <span class="universe-symbol" aria-hidden="true">✳</span>
+                    <div>
+                        <h3>Les essentiels</h3>
+                        <p>Le beau dans tous les jours.</p>
+                    </div>
+                    <span class="coming-soon">À VENIR</span>
+                </article>
+            </div>
+            <div class="col-md-4">
+                <article class="universe-card universe-card-sage">
+                    <span class="universe-number">03</span>
+                    <span class="universe-symbol" aria-hidden="true">◌</span>
+                    <div>
+                        <h3>Les idées cadeaux</h3>
+                        <p>Une attention qui a du sens.</p>
+                    </div>
+                    <span class="coming-soon">À VENIR</span>
+                </article>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="approach-section" id="engagements">
+    <div class="container">
+        <div class="approach-panel">
+            <div class="approach-copy">
+                <p class="eyebrow"><span class="eyebrow-line"></span> PETIT À PETIT, MAIS AVEC LE CŒUR</p>
+                <h2>Une boutique se construit.<br><em>Une belle expérience aussi.</em></h2>
+                <p>
+                    Le catalogue est en préparation. En attendant, vous pouvez
+                    déjà créer votre compte et retrouver votre espace personnel.
+                </p>
+                {% if current_user.is_authenticated %}
+                <a class="approach-link" href="{{ url_for('auth.profile') }}">
+                    Retrouver mon espace <span aria-hidden="true">→</span>
                 </a>
-            {% else %}
-                <a class="btn btn-primary my-2" href="{{ url_for('auth.register') }}">
-                    Créer un compte
+                {% else %}
+                <a class="approach-link" href="{{ url_for('auth.register') }}">
+                    Créer mon espace client <span aria-hidden="true">→</span>
                 </a>
-                <a class="btn btn-outline-secondary my-2" href="{{ url_for('auth.login') }}">
-                    Se connecter
-                </a>
-            {% endif %}
+                {% endif %}
+            </div>
+            <div class="approach-mark" aria-hidden="true">
+                <span>atelier</span><span class="mark-star">✳</span>
+            </div>
         </div>
     </div>
 </section>
