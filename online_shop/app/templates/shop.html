@@ -1,37 +1,123 @@
 {% extends "base.html" %}
 
-{% block title %}Atelier — de belles trouvailles, bientôt{% endblock %}
+{% block title %}La boutique — Atelier{% endblock %}
 
 {% block content %}
-<section class="hero-section">
+<section class="catalog-hero">
     <div class="container">
-        <div class="row align-items-center g-5">
-            <div class="col-lg-6 hero-copy">
-                <p class="eyebrow"><span class="eyebrow-line"></span> Decouvrez des bons produits</p>
-                <h1>Le quotidien mérite<br>un peu <em>plus de beau.</em></h1>
-                <p class="hero-description">
-                    Atelier prépare une sélection d’objets choisis avec soin,
-                    pour apporter une touche d’inspiration à chaque journée.
+        <div class="catalog-heading">
+            <div>
+                <p class="eyebrow"><span class="eyebrow-line"></span> LA SÉLECTION ATELIER</p>
+                <h1>Des objets choisis<br><em>pour durer.</em></h1>
+                <p class="catalog-intro">
+                    Des pièces singulières et des essentiels bien pensés.
+                    Trouvez l’objet qui vous ressemble.
                 </p>
-
-                <!-- section pour le filtrage des produits -->
-                 <div class="fiter_section">
-                    <form method="get" action="{{ url_for('shop') }}">
-                        <label for="category">Filtrer par catégorie :</label>
-                        <select name="category" id="category">
-                            <option value="">Toutes les catégories</option>
-                            {% for category in categories %}
-                                <option value="{{ category.id }}" {% if selected_category == category.id %}selected{% endif %}>
-                                    {{ category.name }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                        <button type="submit">Filtrer</button>
-                    </form>
-                 </div>
-                 <!-- liste des produits avec du grid column -->
+            </div>
+            <div class="catalog-aside" aria-hidden="true">
+                <span class="catalog-aside-star">✳</span>
+                <span>LE BEAU<br>AU QUOTIDIEN</span>
             </div>
         </div>
+    </div>
+</section>
+
+<section class="catalog-section" aria-labelledby="catalog-title">
+    <div class="container">
+        <div class="catalog-toolbar">
+            <div class="catalog-result">
+                <h2 id="catalog-title">La boutique</h2>
+                <p>
+                    {% if products|length == 1 %}
+                        1 pièce à découvrir
+                    {% else %}
+                        {{ products|length }} pièces à découvrir
+                    {% endif %}
+                </p>
+            </div>
+            <form class="catalog-filters" method="get" action="{{ url_for('shop') }}">
+                <label class="visually-hidden" for="catalog-search">Rechercher un produit</label>
+                <div class="catalog-search">
+                    <input id="catalog-search" class="form-control" type="search" name="q"
+                           value="{{ search_query }}" placeholder="Rechercher une pièce..."
+                           maxlength="80">
+                    <button class="catalog-search-button" type="submit"
+                            aria-label="Rechercher">⌕</button>
+                </div>
+                <label class="visually-hidden" for="category">Filtrer par catégorie</label>
+                <select class="form-select catalog-category" name="category" id="category">
+                    <option value="">Toutes les catégories</option>
+                    {% for category in categories %}
+                    <option value="{{ category.id }}"
+                            {% if selected_category == category.id %}selected{% endif %}>
+                        {{ category.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+                <button class="catalog-filter-button" type="submit">Filtrer</button>
+                {% if search_query or selected_category %}
+                <a class="catalog-reset" href="{{ url_for('shop') }}">Effacer</a>
+                {% endif %}
+            </form>
+        </div>
+
+        {% if products %}
+        <div class="row g-4 product-grid">
+            {% for product in products %}
+            <article class="col-sm-6 col-lg-4 col-xl-3">
+                <div class="product-card">
+                    <div class="product-image-wrap">
+                        {% if product.image %}
+                        <img class="product-image" src="{{ product.image }}"
+                             alt="{{ product.name }}" loading="lazy">
+                        {% else %}
+                        <div class="product-image-placeholder" aria-hidden="true">
+                            <span>{{ product.name[:1]|upper }}</span>
+                            <small>ATELIER</small>
+                        </div>
+                        {% endif %}
+                        {% if product.stock > 0 %}
+                        <span class="product-stock-badge">En stock</span>
+                        {% else %}
+                        <span class="product-stock-badge product-stock-unavailable">
+                            Épuisé
+                        </span>
+                        {% endif %}
+                    </div>
+                    <div class="product-card-info">
+                        <div class="product-card-heading">
+                            <div>
+                                {% if product.category %}
+                                <p class="product-category">{{ product.category.name }}</p>
+                                {% endif %}
+                                <h3 class="product-name">{{ product.name }}</h3>
+                            </div>
+                            <p class="product-price">{{ "%.2f"|format(product.price) }} €</p>
+                        </div>
+                        {% if product.description %}
+                        <p class="product-description">{{ product.description }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+        {% elif search_query or selected_category %}
+        <div class="catalog-empty">
+            <span class="empty-mark" aria-hidden="true">⌕</span>
+            <h3>Aucune pièce trouvée</h3>
+            <p>Essayez un autre mot ou affichez à nouveau toute la sélection.</p>
+            <a class="btn btn-terracotta" href="{{ url_for('shop') }}">
+                Voir toute la boutique <span aria-hidden="true">↗</span>
+            </a>
+        </div>
+        {% else %}
+        <div class="catalog-empty">
+            <span class="empty-mark" aria-hidden="true">✳</span>
+            <h3>La sélection se prépare</h3>
+            <p>Nos premières pièces arrivent bientôt. Revenez nous voir très vite.</p>
+        </div>
+        {% endif %}
     </div>
 </section>
 {% endblock %}

@@ -1,8 +1,10 @@
 
-from flask import Flask, render_template
+from flask import Flask, render_template, request
+from sqlalchemy import or_
 
 from config import Config
 from app.extensions import db, login_manager, csrf
+from app.models import Category, Product
 
 
 def create_app():
@@ -44,6 +46,35 @@ def create_app():
 
     @app.get("/shop")
     def shop():
-        return render_template("shop.html")
+        """
+        Affiche la page de la boutique avec les produits filtrés par catégorie et par recherche."""
+        categories = db.session.scalars(
+            db.select(Category).order_by(Category.name)
+        ).all()
+        selected_category = request.args.get("category", type=int)
+        search_query = request.args.get("q", "").strip()[:80]
+        product_query = db.select(Product).order_by(Product.name)
+
+        if selected_category is not None:
+            product_query = product_query.where(
+                Product.category_id == selected_category
+            )
+        if search_query:
+            search_pattern = f"%{search_query}%"
+            product_query = product_query.where(
+                or_(
+                    Product.name.ilike(search_pattern),
+                    Product.description.ilike(search_pattern),
+                )
+            )
+
+        products = db.session.scalars(product_query).all()
+        return render_template(
+            "shop.html",
+            categories=categories,
+            products=products,
+            search_query=search_query,
+            selected_category=selected_category,
+        )
 
     return app
