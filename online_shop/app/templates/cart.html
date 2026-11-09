@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block title %}Mon panier — Atelier{% endblock %}
+
+{% block content %}
+<section class="cart-page">
+    <div class="container">
+        <div class="cart-heading">
+            <div>
+                <p class="eyebrow"><span class="eyebrow-line"></span> VOTRE SÉLECTION</p>
+                <h1>Mon panier</h1>
+                <p>
+                    {% set item_count = items|sum(attribute="quantity") %}
+                    {% if item_count == 1 %}
+                        1 pièce vous attend.
+                    {% else %}
+                        {{ item_count }} pièces vous attendent.
+                    {% endif %}
+                </p>
+            </div>
+            <a class="cart-continue-link" href="{{ url_for('shop') }}">
+                <span aria-hidden="true">←</span> Continuer mes découvertes
+            </a>
+        </div>
+
+        {% if items %}
+        <div class="cart-layout">
+            <div class="cart-items-list">
+                {% for item in items %}
+                <article class="cart-item">
+                    <a class="cart-item-image" href="{{ url_for('product_detail', product_id=item.product.id) }}"
+                       aria-label="Voir {{ item.product.name }}">
+                        {% if item.product.image %}
+                        <img src="{{ item.product.image }}" alt="{{ item.product.name }}"
+                             loading="lazy">
+                        {% else %}
+                        <span aria-hidden="true">{{ item.product.name[:1]|upper }}</span>
+                        {% endif %}
+                    </a>
+                    <div class="cart-item-info">
+                        {% if item.product.category %}
+                        <p class="product-category">{{ item.product.category.name }}</p>
+                        {% endif %}
+                        <h2>
+                            <a href="{{ url_for('product_detail', product_id=item.product.id) }}">
+                                {{ item.product.name }}
+                            </a>
+                        </h2>
+                        <p class="cart-item-unit-price">
+                            {{ "%.2f"|format(item.product.price) }} € / pièce
+                        </p>
+                        {% if item.product.stock > 0 %}
+                        <p class="cart-item-stock">
+                            En stock · {{ item.product.stock }}
+                            {% if item.product.stock == 1 %}disponible{% else %}disponibles{% endif %}
+                        </p>
+                        {% else %}
+                        <p class="cart-item-stock cart-item-stock-out">
+                            Actuellement indisponible
+                        </p>
+                        {% endif %}
+                    </div>
+                    <div class="cart-item-controls">
+                        {% if item.product.stock > 0 %}
+                        <form class="cart-quantity-form" method="post"
+                              action="{{ url_for('cart.update', item_id=item.id) }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <label class="visually-hidden" for="quantity-{{ item.id }}">
+                                Quantité de {{ item.product.name }}
+                            </label>
+                            <input id="quantity-{{ item.id }}" name="quantity" type="number"
+                                   min="1" max="{{ item.product.stock }}"
+                                   value="{{ item.quantity }}" required>
+                            <button type="submit">Mettre à jour</button>
+                        </form>
+                        {% endif %}
+                        <form method="post"
+                              action="{{ url_for('cart.remove', item_id=item.id) }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button class="cart-remove-button" type="submit">
+                                Retirer
+                            </button>
+                        </form>
+                    </div>
+                    <p class="cart-item-subtotal">
+                        {{ "%.2f"|format(item.product.price * item.quantity) }} €
+                    </p>
+                </article>
+                {% endfor %}
+            </div>
+
+            <aside class="cart-summary">
+                <p class="eyebrow"><span class="eyebrow-line"></span> RÉCAPITULATIF</p>
+                <h2>Votre sélection</h2>
+                <div class="cart-summary-row">
+                    <span>Sous-total</span>
+                    <strong>{{ "%.2f"|format(total) }} €</strong>
+                </div>
+                <div class="cart-summary-row">
+                    <span>Livraison</span>
+                    <span>Calculée à l’étape suivante</span>
+                </div>
+                <div class="cart-summary-total">
+                    <span>Total provisoire</span>
+                    <strong>{{ "%.2f"|format(total) }} €</strong>
+                </div>
+                <button class="btn cart-checkout-button" type="button" disabled>
+                    Commander prochainement
+                </button>
+                <p class="cart-checkout-note">
+                    Le paiement et la finalisation de la commande seront disponibles
+                    dans une prochaine étape.
+                </p>
+                <a class="cart-secure-note" href="{{ url_for('shop') }}">
+                    Revenir à la boutique <span aria-hidden="true">→</span>
+                </a>
+            </aside>
+        </div>
+        {% else %}
+        <div class="cart-empty">
+            <span class="empty-mark" aria-hidden="true">⌑</span>
+            <h2>Votre panier attend sa première trouvaille.</h2>
+            <p>
+                Parcourez la sélection Atelier et ajoutez les pièces qui vous plaisent.
+                Elles vous attendront ici.
+            </p>
+            <a class="btn btn-terracotta" href="{{ url_for('shop') }}">
+                Découvrir la boutique <span aria-hidden="true">↗</span>
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

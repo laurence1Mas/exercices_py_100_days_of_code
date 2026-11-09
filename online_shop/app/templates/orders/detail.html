@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}Commande #{{ order.id }} — Atelier{% endblock %}
+
+{% block content %}
+<section class="orders-page">
+    <div class="container">
+        <nav class="product-breadcrumb" aria-label="Fil d’Ariane">
+            <a href="{{ url_for('home') }}">Accueil</a>
+            <span aria-hidden="true">/</span>
+            <a href="{{ url_for('orders.index') }}">Mes commandes</a>
+            <span aria-hidden="true">/</span>
+            <span aria-current="page">Commande #{{ order.id }}</span>
+        </nav>
+
+        <div class="order-detail-heading">
+            <div>
+                <p class="eyebrow"><span class="eyebrow-line"></span> RÉCAPITULATIF</p>
+                <h1>Commande #{{ order.id }}</h1>
+                <p>Passée le {{ order.created_at.strftime("%d/%m/%Y à %H:%M") }}</p>
+            </div>
+            <span class="order-status-badge order-status-{{ order.status|lower }}">
+                {{ order.status|replace("_", " ")|capitalize }}
+            </span>
+        </div>
+
+        <div class="order-detail-layout">
+            <div class="order-items-panel">
+                <h2>Articles commandés</h2>
+                {% for item in order.items %}
+                <article class="order-item">
+                    <div class="order-item-image">
+                        {% if item.product.image %}
+                        <img src="{{ item.product.image }}" alt="{{ item.product.name }}"
+                             loading="lazy">
+                        {% else %}
+                        <span aria-hidden="true">{{ item.product.name[:1]|upper }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="order-item-info">
+                        <h3>{{ item.product.name }}</h3>
+                        <p>Quantité : {{ item.quantity }}</p>
+                    </div>
+                    <div class="order-item-price">
+                        <span>{{ "%.2f"|format(item.unit_price) }} € / unité</span>
+                        <strong>{{ "%.2f"|format(item.unit_price * item.quantity) }} €</strong>
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+
+            <aside class="order-summary-panel">
+                <h2>Résumé</h2>
+                <div class="order-summary-row">
+                    <span>Statut du paiement</span>
+                    <strong>{{ order.payment_status|replace("_", " ")|capitalize }}</strong>
+                </div>
+                <div class="order-summary-total">
+                    <span>Total de la commande</span>
+                    <strong>{{ "%.2f"|format(order.total_amount) }} €</strong>
+                </div>
+                <a class="order-detail-link" href="{{ url_for('orders.index') }}">
+                    <span aria-hidden="true">←</span> Retour à mes commandes
+                </a>
+            </aside>
+        </div>
+    </div>
+</section>
+{% endblock %}

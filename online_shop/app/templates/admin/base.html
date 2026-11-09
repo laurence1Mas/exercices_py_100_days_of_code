@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Administration — Atelier{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="admin-shell">
+    <header class="admin-topbar">
+        <a class="admin-brand" href="{{ url_for('admin.dashboard') }}">
+            <span class="brand-mark" aria-hidden="true">A</span>
+            <span>atelier<span>.</span></span>
+            <span class="admin-brand-label">STUDIO</span>
+        </a>
+        <div class="admin-topbar-actions">
+            <span class="admin-topbar-greeting">{{ current_user.name }}</span>
+            <a class="admin-store-link" href="{{ url_for('home') }}">
+                Voir la boutique <span aria-hidden="true">↗</span>
+            </a>
+            <form method="post" action="{{ url_for('auth.logout') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button class="admin-logout" type="submit">Déconnexion</button>
+            </form>
+        </div>
+    </header>
+
+    <div class="admin-app-layout">
+        <aside class="admin-sidebar" aria-label="Navigation administrateur">
+            <p class="admin-sidebar-label">ESPACE ADMIN</p>
+            <nav class="admin-sidebar-nav">
+                <a class="admin-sidebar-link{% if request.endpoint == 'admin.dashboard' %} admin-sidebar-active{% endif %}"
+                   href="{{ url_for('admin.dashboard') }}">
+                    <span aria-hidden="true">◫</span> Vue d’ensemble
+                </a>
+                <a class="admin-sidebar-link{% if request.endpoint == 'admin.products' %} admin-sidebar-active{% endif %}"
+                   href="{{ url_for('admin.products') }}">
+                    <span aria-hidden="true">□</span> Produits
+                </a>
+                <a class="admin-sidebar-link{% if request.endpoint == 'admin.orders' %} admin-sidebar-active{% endif %}"
+                   href="{{ url_for('admin.orders') }}">
+                    <span aria-hidden="true">▤</span> Commandes
+                </a>
+                <a class="admin-sidebar-link{% if request.endpoint == 'admin.messages' %} admin-sidebar-active{% endif %}"
+                   href="{{ url_for('admin.messages') }}">
+                    <span aria-hidden="true">✉</span> Messages
+                </a>
+                <a class="admin-sidebar-link{% if request.endpoint == 'admin.stock' %} admin-sidebar-active{% endif %}"
+                   href="{{ url_for('admin.stock') }}">
+                    <span aria-hidden="true">▦</span> Stock
+                </a>
+                <a class="admin-sidebar-link{% if request.endpoint == 'admin.statistics' %} admin-sidebar-active{% endif %}"
+                   href="{{ url_for('admin.statistics') }}">
+                    <span aria-hidden="true">⌁</span> Statistiques
+                </a>
+            </nav>
+            <div class="admin-sidebar-bottom">
+                <span class="admin-sidebar-avatar">{{ current_user.name[:1]|upper }}</span>
+                <span>
+                    <strong>{{ current_user.name }}</strong>
+                    <small>Administrateur</small>
+                </span>
+            </div>
+        </aside>
+
+        <main class="admin-main">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="admin-flashes">
+                {% for category, message in messages %}
+                <div class="alert alert-{{ 'danger' if category == 'error' else category }}"
+                     role="alert">{{ message }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+            {% block admin_content %}{% endblock %}
+            <footer class="admin-footer">
+                <span>Atelier · Administration</span>
+                <a href="{{ url_for('home') }}">Retour à la boutique</a>
+            </footer>
+        </main>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

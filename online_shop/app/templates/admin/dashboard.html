@@ -1,0 +1,123 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Administration — Atelier{% endblock %}
+
+{% block admin_content %}
+<section class="admin-page">
+    <div class="admin-content">
+        <div class="admin-heading">
+            <div>
+                <p class="eyebrow"><span class="eyebrow-line"></span> ESPACE PRIVÉ</p>
+                <h1>Bonjour, {{ current_user.name }}.</h1>
+                <p>Voici un aperçu de l’activité de votre boutique.</p>
+            </div>
+            <a class="admin-store-link" href="{{ url_for('shop') }}">
+                Voir la boutique <span aria-hidden="true">↗</span>
+            </a>
+        </div>
+
+        <div class="row g-3 admin-stats">
+            <div class="col-6 col-xl">
+                <article class="admin-stat-card">
+                    <span class="admin-stat-label">PRODUITS</span>
+                    <strong>{{ product_count }}</strong>
+                    <span class="admin-stat-caption">dans le catalogue</span>
+                </article>
+            </div>
+            <div class="col-6 col-xl">
+                <article class="admin-stat-card">
+                    <span class="admin-stat-label">CLIENTS</span>
+                    <strong>{{ customer_count }}</strong>
+                    <span class="admin-stat-caption">comptes clients</span>
+                </article>
+            </div>
+            <div class="col-6 col-xl">
+                <article class="admin-stat-card">
+                    <span class="admin-stat-label">COMMANDES</span>
+                    <strong>{{ order_count }}</strong>
+                    <span class="admin-stat-caption">au total</span>
+                </article>
+            </div>
+            <div class="col-6 col-xl">
+                <article class="admin-stat-card">
+                    <span class="admin-stat-label">À TRAITER</span>
+                    <strong>{{ pending_count }}</strong>
+                    <span class="admin-stat-caption">commandes en attente</span>
+                </article>
+            </div>
+            <div class="col-12 col-xl">
+                <article class="admin-stat-card admin-stat-revenue">
+                    <span class="admin-stat-label">REVENUS ENCAISSÉS</span>
+                    <strong>{{ "%.2f"|format(paid_revenue) }} €</strong>
+                    <span class="admin-stat-caption">commandes payées</span>
+                </article>
+            </div>
+        </div>
+
+        <div class="admin-content-grid">
+            <section class="admin-panel">
+                <div class="admin-panel-heading">
+                    <div>
+                        <p class="eyebrow"><span class="eyebrow-line"></span> SUIVI</p>
+                        <h2>Dernières commandes</h2>
+                    </div>
+                    <span class="admin-panel-count">{{ recent_orders|length }}</span>
+                </div>
+
+                {% if recent_orders %}
+                <div class="table-responsive">
+                    <table class="table admin-orders-table align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th scope="col">Commande</th>
+                                <th scope="col">Client</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Statut</th>
+                                <th scope="col" class="text-end">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in recent_orders %}
+                            <tr>
+                                <th scope="row">#{{ order.id }}</th>
+                                <td>
+                                    <span class="admin-customer-name">{{ order.user.name }}</span>
+                                    <span class="admin-customer-email">{{ order.user.email }}</span>
+                                </td>
+                                <td>{{ order.created_at.strftime("%d/%m/%Y") }}</td>
+                                <td>
+                                    <span class="order-status-badge order-status-{{ order.status|lower }}">
+                                        {{ order.status|replace("_", " ")|capitalize }}
+                                    </span>
+                                </td>
+                                <td class="text-end fw-semibold">
+                                    {{ "%.2f"|format(order.total_amount) }} €
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="admin-empty">
+                    <span class="empty-mark" aria-hidden="true">✳</span>
+                    <h3>Aucune commande pour le moment</h3>
+                    <p>Les nouvelles commandes apparaîtront ici.</p>
+                </div>
+                {% endif %}
+            </section>
+
+            <aside class="admin-panel admin-next-panel">
+                <p class="eyebrow"><span class="eyebrow-line"></span> GESTION</p>
+                <h2>Accédez rapidement à vos espaces.</h2>
+                <div class="admin-quick-links">
+                    <a href="{{ url_for('admin.products') }}">Voir les produits <span aria-hidden="true">→</span></a>
+                    <a href="{{ url_for('admin.orders') }}">Consulter les commandes <span aria-hidden="true">→</span></a>
+                    <a href="{{ url_for('admin.stock') }}">Suivre le stock <span aria-hidden="true">→</span></a>
+                    <a href="{{ url_for('admin.statistics') }}">Voir les statistiques <span aria-hidden="true">→</span></a>
+                </div>
+            </aside>
+        </div>
+    </div>
+</section>
+{% endblock %}

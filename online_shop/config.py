@@ -11,7 +11,6 @@ class Config:
         "SECRET_KEY",
         "dev-secret-key-change-later"
     )
-
     SQLALCHEMY_DATABASE_URI = (
         "sqlite:///" + os.path.join(BASE_DIR, "ecommerce.db")
     )

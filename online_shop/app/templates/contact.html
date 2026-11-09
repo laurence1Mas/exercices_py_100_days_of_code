@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Contact — Atelier{% endblock %}
+
+{% block content %}
+<section class="contact-page">
+    <div class="container">
+        <div class="contact-card">
+            <p class="eyebrow"><span class="eyebrow-line"></span> RESTONS EN LIEN</p>
+            <h1>Une question ?</h1>
+            <p class="contact-intro">
+                Écrivez-nous à l’aide du formulaire ci-dessous. Votre message sera
+                enregistré et consultable par notre équipe.
+            </p>
+            <form class="contact-form" method="post" action="{{ url_for('contact') }}">
+                {{ form.hidden_tag() }}
+                <div class="contact-form-grid">
+                    <div class="contact-field">
+                        {{ form.name.label(class="form-label") }}
+                        {{ form.name(class="form-control", autocomplete="name", maxlength="100") }}
+                        {% for error in form.name.errors %}
+                        <span class="contact-field-error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="contact-field">
+                        {{ form.email.label(class="form-label") }}
+                        {{ form.email(class="form-control", autocomplete="email", maxlength="120") }}
+                        {% for error in form.email.errors %}
+                        <span class="contact-field-error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="contact-field contact-field-full">
+                        {{ form.subject.label(class="form-label") }}
+                        {{ form.subject(class="form-control", maxlength="150") }}
+                        {% for error in form.subject.errors %}
+                        <span class="contact-field-error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="contact-field contact-field-full">
+                        {{ form.message.label(class="form-label") }}
+                        {{ form.message(class="form-control", rows="6", maxlength="5000") }}
+                        {% for error in form.message.errors %}
+                        <span class="contact-field-error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {{ form.submit(class="btn btn-terracotta contact-submit") }}
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

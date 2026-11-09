@@ -67,6 +67,9 @@
             <article class="col-sm-6 col-lg-4 col-xl-3">
                 <div class="product-card">
                     <div class="product-image-wrap">
+                        <a class="product-image-link"
+                           href="{{ url_for('product_detail', product_id=product.id) }}"
+                           aria-label="Voir {{ product.name }}">
                         {% if product.image %}
                         <img class="product-image" src="{{ product.image }}"
                              alt="{{ product.name }}" loading="lazy">
@@ -76,6 +79,7 @@
                             <small>ATELIER</small>
                         </div>
                         {% endif %}
+                        </a>
                         {% if product.stock > 0 %}
                         <span class="product-stock-badge">En stock</span>
                         {% else %}
@@ -90,7 +94,11 @@
                                 {% if product.category %}
                                 <p class="product-category">{{ product.category.name }}</p>
                                 {% endif %}
-                                <h3 class="product-name">{{ product.name }}</h3>
+                                <h3 class="product-name">
+                                    <a href="{{ url_for('product_detail', product_id=product.id) }}">
+                                        {{ product.name }}
+                                    </a>
+                                </h3>
                             </div>
                             <p class="product-price">{{ "%.2f"|format(product.price) }} €</p>
                         </div>

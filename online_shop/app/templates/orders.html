@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Mes commandes — Atelier{% endblock %}
+
+{% block content %}
+<section class="orders-page">
+    <div class="container">
+        <div class="orders-heading">
+            <div>
+                <p class="eyebrow"><span class="eyebrow-line"></span> VOTRE ESPACE</p>
+                <h1>Mes commandes</h1>
+                <p>Retrouvez ici vos achats et leur statut.</p>
+            </div>
+            <a class="orders-back-link" href="{{ url_for('shop') }}">
+                Continuer mes découvertes <span aria-hidden="true">→</span>
+            </a>
+        </div>
+
+        {% if orders %}
+        <div class="orders-list">
+            {% for order in orders %}
+            <article class="order-card">
+                <div class="order-card-main">
+                    <div class="order-card-reference">
+                        <span class="order-reference-label">COMMANDE</span>
+                        <h2>#{{ order.id }}</h2>
+                    </div>
+                    <div class="order-card-date">
+                        <span class="order-reference-label">DATE</span>
+                        <p>{{ order.created_at.strftime("%d/%m/%Y à %H:%M") }}</p>
+                    </div>
+                    <div class="order-card-summary">
+                        <span class="order-reference-label">ARTICLES</span>
+                        <p>
+                            {{ order.items|sum(attribute="quantity") }}
+                            {% if order.items|sum(attribute="quantity") == 1 %}article{% else %}articles{% endif %}
+                        </p>
+                    </div>
+                    <div class="order-card-total">
+                        <span class="order-reference-label">TOTAL</span>
+                        <p>{{ "%.2f"|format(order.total_amount) }} €</p>
+                    </div>
+                    <div class="order-card-status">
+                        <span class="order-status-badge order-status-{{ order.status|lower }}">
+                            {{ order.status|replace("_", " ")|capitalize }}
+                        </span>
+                        <span class="payment-status">
+                            Paiement : {{ order.payment_status|replace("_", " ")|lower }}
+                        </span>
+                    </div>
+                    <a class="order-detail-link"
+                       href="{{ url_for('orders.detail', order_id=order.id) }}">
+                        Voir le détail <span aria-hidden="true">→</span>
+                    </a>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="orders-empty">
+            <span class="empty-mark" aria-hidden="true">✳</span>
+            <h2>Pas encore de commande</h2>
+            <p>
+                Vos prochaines commandes apparaîtront ici. La boutique prépare
+                encore son parcours d’achat.
+            </p>
+            <a class="btn btn-terracotta" href="{{ url_for('shop') }}">
+                Découvrir la boutique <span aria-hidden="true">↗</span>
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

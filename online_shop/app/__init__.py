@@ -1,10 +1,11 @@
 
-from flask import Flask, render_template, request
-from sqlalchemy import or_
+from flask import Flask, abort, flash, redirect, render_template, request, url_for
+from flask_login import current_user
+from sqlalchemy import func, or_
 
 from config import Config
 from app.extensions import db, login_manager, csrf
-from app.models import Category, Product
+from app.models import Category, ContactMessage, Product, User
 
 
 def create_app():
@@ -21,6 +22,9 @@ def create_app():
     # Importer les modèles pour les enregistrer auprès de SQLAlchemy
     from app import models
     from app.auth.routes import auth
+    from app.cart.routes import cart
+    from app.contact.forms import ContactForm
+    from app.orders.routes import orders
 
     @login_manager.user_loader
     def load_user(user_id):
@@ -31,6 +35,11 @@ def create_app():
         db.create_all()
 
     app.register_blueprint(auth)
+    app.register_blueprint(cart)
+    app.register_blueprint(orders)
+    from app.admin.routes import admin
+
+    app.register_blueprint(admin)
 
     @app.get("/")
     def home():
@@ -41,8 +50,30 @@ def create_app():
         return render_template("univers.html")
 
     @app.get("/contact")
+    @app.post("/contact")
     def contact():
-        return render_template("contact.html")
+        form = ContactForm()
+        if form.validate_on_submit():
+            db.session.add(
+                ContactMessage(
+                    name=form.name.data,
+                    email=form.email.data,
+                    subject=form.subject.data,
+                    message=form.message.data,
+                )
+            )
+            db.session.commit()
+            flash(
+                "Votre message a bien été enregistré. Merci de nous avoir contactés.",
+                "success",
+            )
+            return redirect(url_for("contact"))
+
+        if request.method == "GET" and current_user.is_authenticated:
+            form.name.data = current_user.name
+            form.email.data = current_user.email
+
+        return render_template("contact.html", form=form)
 
     @app.get("/shop")
     def shop():
@@ -76,5 +107,12 @@ def create_app():
             search_query=search_query,
             selected_category=selected_category,
         )
+
+    @app.get("/shop/<int:product_id>")
+    def product_detail(product_id):
+        product = db.session.get(Product, product_id)
+        if product is None:
+            abort(404)
+        return render_template("product_detail.html", product=product)
 
     return app

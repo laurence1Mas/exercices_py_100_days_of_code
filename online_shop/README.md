@@ -9,14 +9,38 @@ Flask-SQLAlchemy, Flask-Login, Flask-WTF et Bootstrap.
 - Création des tables SQLite pour les utilisateurs, catégories, produits,
   paniers et commandes.
 - Page d'accueil publique accessible à `/`.
+- Catalogue produits avec recherche, filtre par catégorie et fiches produit.
+- Panier persistant par client : ajout depuis les fiches produit, modification
+  des quantités et suppression avec vérification du stock.
+- Historique des commandes et détail privé des commandes du client connecté.
+- Espace administrateur réservé au rôle `ADMIN`, avec des pages distinctes pour
+  l'aperçu, les produits, les commandes, le stock et les statistiques.
+- Formulaire de contact avec validation et enregistrement des messages en base ;
+  les administrateurs les consultent depuis `/admin/messages`.
 - Inscription avec validation des champs et vérification de l'unicité de
   l'adresse e-mail (sans tenir compte de la casse).
 - Hachage des mots de passe avec Werkzeug.
 - Connexion, déconnexion protégée par CSRF et page de profil protégée.
 - Rôle `CUSTOMER` attribué par défaut aux nouveaux comptes.
 
-Les modèles du panier, du catalogue et des commandes sont définis, mais leurs
-routes et leurs pages ne sont pas encore implémentées.
+Le checkout et le paiement ne sont pas encore implémentés ; le bouton de
+finalisation du panier reste donc désactivé. Les commandes visibles dans
+l'historique doivent être créées en base par une étape ultérieure ou par du code
+de test.
+
+### Créer le compte administrateur initial
+
+Depuis le dossier `online_shop`, lancez le seed interactif :
+
+```powershell
+python seed_admin.py
+```
+
+Le script demande l’adresse e-mail, puis le mot de passe deux fois sans afficher
+les saisies. Le mot de passe doit contenir au moins 12 caractères et il est
+enregistré sous forme hachée. Connectez-vous ensuite à `/auth/login`. Le rôle
+`ADMIN` n'est jamais attribué par l'inscription publique. Si l’adresse existe
+déjà pour un client, le seed s’arrête sans modifier ce compte.
 
 ## Prérequis et lancement
 
@@ -47,8 +71,8 @@ définissez une clé privée dans l'environnement avant tout déploiement.
 3. Les modèles sont importés pour que SQLAlchemy les connaisse. Le gestionnaire
    de connexion récupère l'utilisateur courant à partir de son identifiant.
 4. `db.create_all()` crée les tables manquantes dans la base SQLite.
-5. Le blueprint d'authentification est enregistré et la route `/` affiche la
-   page d'accueil.
+5. Le blueprint d'authentification est enregistré. Les routes de l'accueil et
+   de la boutique sont alors disponibles.
 
 ### Inscription
 
@@ -71,16 +95,62 @@ définissez une clé privée dans l'environnement avant tout déploiement.
 3. La page de profil exige une session authentifiée. La déconnexion se fait par
    une requête POST protégée par CSRF et ferme cette session.
 
+### Espace administrateur
+
+1. `python seed_admin.py` crée le compte administrateur initial dans la base
+   configurée, après saisie interactive de l’adresse et du mot de passe.
+2. Toutes les routes `/admin/` exigent une connexion et le rôle exact `ADMIN` ;
+   un client connecté reçoit une réponse 403.
+3. La barre latérale mène aux pages `/admin/` (aperçu), `/admin/products`,
+   `/admin/orders`, `/admin/stock` et `/admin/statistics`. La page active est
+   indiquée dans la navigation.
+4. L'aperçu affiche les indicateurs principaux et les cinq dernières commandes.
+   Les pages Produits, Commandes et Stock présentent leurs listes respectives ;
+   la page Statistiques détaille les indicateurs de ventes et d'activité.
+
+### Formulaire de contact
+
+1. `/contact` affiche un formulaire avec le nom, l'adresse e-mail, le sujet et
+   le message. Les visiteurs connectés voient leur nom et leur e-mail préremplis.
+2. Flask-WTF protège la soumission par CSRF et valide les champs côté serveur.
+   Un message valide est enregistré dans la table `contact_messages`, puis
+   l'utilisateur est redirigé vers le formulaire avec une confirmation.
+3. La page `/admin/messages`, réservée au rôle `ADMIN`, présente les 100 messages
+   les plus récents. Aucun e-mail n'est envoyé automatiquement.
+
+### Historique et détail des commandes
+
+1. `/orders/` exige une session utilisateur et ne charge que les commandes
+   associées à cet utilisateur, de la plus récente à la plus ancienne.
+2. Chaque ligne affiche la date, le nombre d'articles, le total ainsi que les
+   statuts de commande et de paiement.
+3. `/orders/<id>` vérifie à la fois l'identifiant de la commande et celui du
+   client connecté. Une commande inexistante ou appartenant à un autre client
+   renvoie une réponse 404.
+4. Le détail reprend les quantités et prix unitaires enregistrés dans les
+   lignes de commande. Les commandes apparaîtront automatiquement lorsque le
+   checkout sera implémenté.
+
+### Panier
+
+1. `/cart/` exige une connexion et ne charge que les articles du client courant.
+2. Depuis une fiche produit en stock, le client ajoute une quantité ; le serveur
+   vérifie la disponibilité avant de créer ou mettre à jour la ligne du panier.
+3. Le client peut modifier la quantité ou retirer un article. Chaque action
+   vérifie que la ligne lui appartient et que le stock permet cette quantité.
+4. Le sous-total et le total provisoire sont recalculés à partir des prix
+   actuels du catalogue. Le checkout reste désactivé jusqu'à son implémentation.
+
 ## Structure du projet
 
 ```text
 online_shop/
 ├── app/
-│   ├── admin/                 # Espace d'administration à développer
+│   ├── admin/                 # Tableau de bord administrateur
 │   ├── auth/                  # Formulaires et routes d'authentification
-│   ├── cart/                  # Panier à développer
-│   ├── orders/                # Commandes et paiement à développer
-│   ├── shop/                  # Catalogue à développer
+│   ├── cart/                  # Routes d'ajout et de gestion du panier
+│   ├── orders/                # Historique et détail des commandes
+│   ├── shop/                  # Routes du catalogue à développer
 │   ├── static/                # CSS, JavaScript et images
 │   ├── templates/             # Pages Jinja2
 │   ├── extensions.py          # Extensions Flask partagées
@@ -93,11 +163,9 @@ online_shop/
 
 ## Prochaines étapes
 
-1. Développer le catalogue et les pages de détail produit.
-2. Ajouter la gestion administrateur des produits et catégories.
-3. Implémenter le panier avec contrôle de stock.
-4. Ajouter le checkout, la simulation de paiement et la création de commandes.
-5. Créer le suivi des commandes, le tableau de bord et les tests.
+1. Ajouter la gestion administrateur des produits et catégories.
+2. Implémenter le checkout, la simulation de paiement et la création de commandes.
+3. Compléter le suivi administrateur des commandes et les tests.
 
 Le serveur lancé par `python run.py` est un serveur de développement. Utilisez
 un serveur WSGI adapté pour un déploiement en production.
