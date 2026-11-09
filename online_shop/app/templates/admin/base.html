@@ -46,6 +46,10 @@
                     href="{{ url_for('admin.products') }}">
                     <span aria-hidden="true"><i class="fa-solid fa-box-open"></i></span> Produits
                 </a>
+                <a class="admin-sidebar-link{% if request.endpoint in ['admin.categories', 'admin.create_category', 'admin.edit_category'] %} admin-sidebar-active{% endif %}"
+                    href="{{ url_for('admin.categories') }}">
+                    <span aria-hidden="true"><i class="fa-solid fa-tags"></i></span> Catégories
+                </a>
                 <a class="admin-sidebar-link{% if request.endpoint == 'admin.orders' %} admin-sidebar-active{% endif %}"
                     href="{{ url_for('admin.orders') }}">
                     <span aria-hidden="true"><i class="fa-solid fa-clipboard-list"></i></span> Commandes

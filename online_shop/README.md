@@ -15,6 +15,8 @@ Flask-SQLAlchemy, Flask-Login, Flask-WTF et Bootstrap.
 - Historique des commandes et détail privé des commandes du client connecté.
 - Espace administrateur réservé au rôle `ADMIN`, avec des pages distinctes pour
   l'aperçu, les produits, les commandes, le stock et les statistiques.
+- Gestion CRUD des catégories dans l'espace administrateur. Une catégorie
+  contenant des produits ne peut pas être supprimée.
 - Formulaire de contact avec validation et enregistrement des messages en base ;
   les administrateurs les consultent depuis `/admin/messages`.
 - Inscription avec validation des champs et vérification de l'unicité de
@@ -176,11 +178,14 @@ préserver les relations et les règles de validation.
 2. Toutes les routes `/admin/` exigent une connexion et le rôle exact `ADMIN` ;
    un client connecté reçoit une réponse 403.
 3. La barre latérale mène aux pages `/admin/` (aperçu), `/admin/products`,
-   `/admin/orders`, `/admin/stock` et `/admin/statistics`. La page active est
-   indiquée dans la navigation.
+   `/admin/categories`, `/admin/orders`, `/admin/stock` et `/admin/statistics`.
+   La page active est indiquée dans la navigation.
 4. L'aperçu affiche les indicateurs principaux et les cinq dernières commandes.
    Les pages Produits, Commandes et Stock présentent leurs listes respectives ;
    la page Statistiques détaille les indicateurs de ventes et d'activité.
+5. La page `/admin/categories` permet de créer, lister, modifier et supprimer
+   les catégories. Les noms sont uniques sans tenir compte de la casse ; la
+   suppression est bloquée tant que la catégorie contient des produits.
 
 ### Formulaire de contact
 

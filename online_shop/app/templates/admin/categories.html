@@ -1,0 +1,85 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Catégories — Administration Atelier{% endblock %}
+
+{% block admin_content %}
+<section class="admin-page">
+    <div class="admin-content">
+        <div class="admin-heading">
+            <div>
+                <p class="eyebrow"><span class="eyebrow-line"></span> CATALOGUE</p>
+                <h1>Catégories</h1>
+                <p>Organisez les produits et leurs univers dans la boutique.</p>
+            </div>
+            <a class="btn btn-terracotta" href="{{ url_for('admin.create_category') }}">
+                <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                Ajouter une catégorie
+            </a>
+        </div>
+
+        <section class="admin-panel">
+            <div class="admin-panel-heading">
+                <div>
+                    <p class="eyebrow"><span class="eyebrow-line"></span> ORGANISATION</p>
+                    <h2>Liste des catégories</h2>
+                </div>
+                <span class="admin-panel-count">{{ categories|length }}</span>
+            </div>
+            {% if categories %}
+            <div class="table-responsive">
+                <table class="table admin-orders-table align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th scope="col">Nom</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Produits</th>
+                            <th scope="col" class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for category in categories %}
+                        <tr>
+                            <th scope="row">{{ category.name }}</th>
+                            <td class="admin-category-description">
+                                {{ category.description or "—" }}
+                            </td>
+                            <td>{{ category.products|length }}</td>
+                            <td>
+                                <div class="admin-category-actions">
+                                    <a class="btn btn-sm btn-outline-secondary"
+                                       href="{{ url_for('admin.edit_category', category_id=category.id) }}">
+                                        <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                                        Modifier
+                                    </a>
+                                    <form method="post"
+                                          action="{{ url_for('admin.delete_category', category_id=category.id) }}"
+                                          onsubmit="return confirm('Supprimer cette catégorie ?');">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                        <button class="btn btn-sm btn-outline-danger" type="submit"
+                                                {% if category.products %}disabled title="Réaffectez ses produits avant la suppression"{% endif %}>
+                                            <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                                            Supprimer
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="admin-empty">
+                <i class="empty-mark fa-solid fa-tags" aria-hidden="true"></i>
+                <h3>Aucune catégorie</h3>
+                <p>Créez une catégorie pour commencer à organiser vos produits.</p>
+                <a class="btn btn-terracotta" href="{{ url_for('admin.create_category') }}">
+                    <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                    Créer une catégorie
+                </a>
+            </div>
+            {% endif %}
+        </section>
+    </div>
+</section>
+{% endblock %}

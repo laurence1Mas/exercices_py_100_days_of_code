@@ -2349,6 +2349,67 @@ body {
     white-space: pre-wrap;
 }
 
+.admin-category-shortcut {
+    margin: -12px 0 20px;
+    color: #7a818c;
+    font-size: 0.75rem;
+}
+
+.admin-category-shortcut a {
+    margin-left: 4px;
+    color: #9b5b43;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.admin-category-shortcut a:hover {
+    text-decoration: underline;
+}
+
+.admin-category-description {
+    max-width: 420px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.admin-category-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 7px;
+}
+
+.admin-category-actions form {
+    margin: 0;
+}
+
+.admin-category-form-panel {
+    max-width: 760px;
+    padding: 26px;
+}
+
+.admin-category-form-panel .form-label {
+    color: #424a56;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.admin-category-form-panel .form-control {
+    border-color: #e2e5e9;
+    border-radius: 3px;
+    font-size: 0.82rem;
+}
+
+.admin-category-form-panel .form-control:focus {
+    border-color: #b97a63;
+    box-shadow: 0 0 0 0.2rem rgba(155, 91, 67, 0.12);
+}
+
+.admin-category-form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+}
+
 @media (max-width: 575.98px) {
     .contact-page {
         min-height: 55vh;
@@ -2366,6 +2427,14 @@ body {
     .admin-message-header {
         flex-direction: column;
         gap: 2px;
+    }
+
+    .admin-category-form-panel {
+        padding: 18px;
+    }
+
+    .admin-category-actions {
+        min-width: 180px;
     }
 }
 

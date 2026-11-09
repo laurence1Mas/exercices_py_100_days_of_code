@@ -1,9 +1,11 @@
-from flask import Blueprint, abort, render_template
+from flask import Blueprint, abort, flash, redirect, render_template, url_for
 from flask_login import current_user, login_required
 from sqlalchemy import func
+from sqlalchemy.exc import IntegrityError
 
+from app.admin.forms import CategoryForm
 from app.extensions import db
-from app.models import ContactMessage, Order, Product, User
+from app.models import Category, ContactMessage, Order, Product, User
 
 
 admin = Blueprint("admin", __name__, url_prefix="/admin")
@@ -46,6 +48,91 @@ def products():
         db.select(Product).order_by(Product.name)
     ).all()
     return render_template("admin/products.html", products=products)
+
+
+@admin.get("/categories")
+@login_required
+def categories():
+    categories = db.session.scalars(
+        db.select(Category)
+        .order_by(Category.name)
+    ).all()
+    return render_template("admin/categories.html", categories=categories)
+
+
+@admin.route("/categories/new", methods=["GET", "POST"])
+@login_required
+def create_category():
+    form = CategoryForm()
+    if form.validate_on_submit():
+        if _category_name_exists(form.name.data):
+            form.name.errors.append("Une catégorie porte déjà ce nom.")
+        else:
+            category = Category(
+                name=form.name.data,
+                description=form.description.data or None,
+            )
+            db.session.add(category)
+            try:
+                db.session.commit()
+            except IntegrityError:
+                db.session.rollback()
+                form.name.errors.append("Une catégorie porte déjà ce nom.")
+            else:
+                flash("La catégorie a été créée.", "success")
+                return redirect(url_for("admin.categories"))
+
+    return render_template(
+        "admin/category_form.html",
+        form=form,
+        page_title="Créer une catégorie",
+        category=None,
+    )
+
+
+@admin.route("/categories/<int:category_id>/edit", methods=["GET", "POST"])
+@login_required
+def edit_category(category_id):
+    category = db.get_or_404(Category, category_id)
+    form = CategoryForm(obj=category)
+    if form.validate_on_submit():
+        if _category_name_exists(form.name.data, exclude_id=category.id):
+            form.name.errors.append("Une catégorie porte déjà ce nom.")
+        else:
+            category.name = form.name.data
+            category.description = form.description.data or None
+            try:
+                db.session.commit()
+            except IntegrityError:
+                db.session.rollback()
+                form.name.errors.append("Une catégorie porte déjà ce nom.")
+            else:
+                flash("La catégorie a été modifiée.", "success")
+                return redirect(url_for("admin.categories"))
+
+    return render_template(
+        "admin/category_form.html",
+        form=form,
+        page_title="Modifier une catégorie",
+        category=category,
+    )
+
+
+@admin.post("/categories/<int:category_id>/delete")
+@login_required
+def delete_category(category_id):
+    category = db.get_or_404(Category, category_id)
+    if category.products:
+        flash(
+            "Cette catégorie contient des produits. "
+            "Réaffectez-les avant de la supprimer.",
+            "error",
+        )
+    else:
+        db.session.delete(category)
+        db.session.commit()
+        flash("La catégorie a été supprimée.", "success")
+    return redirect(url_for("admin.categories"))
 
 
 @admin.get("/orders")
@@ -123,3 +210,14 @@ def _dashboard_metrics():
         )
     ) or 0
     return product_count, customer_count, order_count, pending_count, paid_revenue
+
+
+def _category_name_exists(name, exclude_id=None):
+    query = db.select(Category.id, Category.name)
+    if exclude_id is not None:
+        query = query.where(Category.id != exclude_id)
+    normalized_name = name.casefold()
+    return any(
+        existing_name.casefold() == normalized_name
+        for _, existing_name in db.session.execute(query)
+    )
