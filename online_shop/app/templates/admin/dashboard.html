@@ -1,10 +1,10 @@
-{% extends "base.html" %}
+{% extends "admin/base.html" %}
 
 {% block title %}Administration — Atelier{% endblock %}
 
-{% block content %}
-<section class="admin-page">
-    <div class="container">
+{% block admin_content %}
+<section class="admin-page" id="overview">
+    <div class="admin-content">
         <div class="admin-heading">
             <div>
                 <p class="eyebrow"><span class="eyebrow-line"></span> ESPACE PRIVÉ</p>
@@ -16,7 +16,7 @@
             </a>
         </div>
 
-        <div class="row g-3 admin-stats">
+        <div class="row g-3 admin-stats" id="statistics">
             <div class="col-6 col-xl">
                 <article class="admin-stat-card">
                     <span class="admin-stat-label">PRODUITS</span>
@@ -55,7 +55,7 @@
         </div>
 
         <div class="admin-content-grid">
-            <section class="admin-panel">
+            <section class="admin-panel" id="orders">
                 <div class="admin-panel-heading">
                     <div>
                         <p class="eyebrow"><span class="eyebrow-line"></span> SUIVI</p>
@@ -107,17 +107,27 @@
                 {% endif %}
             </section>
 
-            <aside class="admin-panel admin-next-panel">
-                <p class="eyebrow"><span class="eyebrow-line"></span> À VENIR</p>
-                <h2>Votre boutique, à portée de main.</h2>
+            <aside class="admin-panel admin-next-panel" id="products">
+                <p class="eyebrow"><span class="eyebrow-line"></span> CATALOGUE</p>
+                <h2>Gérez votre sélection.</h2>
                 <p>
-                    La gestion des produits, des catégories et des commandes
-                    sera ajoutée dans les prochaines étapes.
+                    La gestion et la modification des produits seront bientôt
+                    disponibles depuis cet espace.
                 </p>
                 <a class="admin-store-link" href="{{ url_for('shop') }}">
                     Parcourir le catalogue <span aria-hidden="true">→</span>
                 </a>
             </aside>
+        </div>
+        <div class="admin-stock-section" id="stock">
+            <div class="admin-stock-heading">
+                <div>
+                    <p class="eyebrow"><span class="eyebrow-line"></span> INVENTAIRE</p>
+                    <h2>Suivi du stock</h2>
+                </div>
+                <span class="admin-coming-soon">GESTION BIENTÔT DISPONIBLE</span>
+            </div>
+            <p>Les alertes de stock et leur mise à jour seront ajoutées dans une prochaine étape.</p>
         </div>
     </div>
 </section>

@@ -58,6 +58,8 @@ def login():
 
         login_user(user)
         flash("Vous êtes connecté.", "success")
+        if user.role == "ADMIN":
+            return redirect(url_for("admin.dashboard"))
         return redirect(url_for("auth.profile"))
 
     return render_template("auth/login.html", form=form)
