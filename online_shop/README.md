@@ -9,14 +9,15 @@ Flask-SQLAlchemy, Flask-Login, Flask-WTF et Bootstrap.
 - Création des tables SQLite pour les utilisateurs, catégories, produits,
   paniers et commandes.
 - Page d'accueil publique accessible à `/`.
+- Catalogue produits avec recherche, filtre par catégorie et fiches produit.
 - Inscription avec validation des champs et vérification de l'unicité de
   l'adresse e-mail (sans tenir compte de la casse).
 - Hachage des mots de passe avec Werkzeug.
 - Connexion, déconnexion protégée par CSRF et page de profil protégée.
 - Rôle `CUSTOMER` attribué par défaut aux nouveaux comptes.
 
-Les modèles du panier, du catalogue et des commandes sont définis, mais leurs
-routes et leurs pages ne sont pas encore implémentées.
+Les modèles du panier et des commandes sont définis, mais ces fonctionnalités
+ne sont pas encore implémentées.
 
 ## Prérequis et lancement
 
@@ -47,8 +48,8 @@ définissez une clé privée dans l'environnement avant tout déploiement.
 3. Les modèles sont importés pour que SQLAlchemy les connaisse. Le gestionnaire
    de connexion récupère l'utilisateur courant à partir de son identifiant.
 4. `db.create_all()` crée les tables manquantes dans la base SQLite.
-5. Le blueprint d'authentification est enregistré et la route `/` affiche la
-   page d'accueil.
+5. Le blueprint d'authentification est enregistré. Les routes de l'accueil et
+   de la boutique sont alors disponibles.
 
 ### Inscription
 
@@ -93,11 +94,10 @@ online_shop/
 
 ## Prochaines étapes
 
-1. Développer le catalogue et les pages de détail produit.
-2. Ajouter la gestion administrateur des produits et catégories.
-3. Implémenter le panier avec contrôle de stock.
-4. Ajouter le checkout, la simulation de paiement et la création de commandes.
-5. Créer le suivi des commandes, le tableau de bord et les tests.
+1. Ajouter la gestion administrateur des produits et catégories.
+2. Implémenter le panier avec contrôle de stock.
+3. Ajouter le checkout, la simulation de paiement et la création de commandes.
+4. Créer le suivi des commandes, le tableau de bord et les tests.
 
 Le serveur lancé par `python run.py` est un serveur de développement. Utilisez
 un serveur WSGI adapté pour un déploiement en production.

@@ -1,5 +1,5 @@
 
-from flask import Flask, render_template, request
+from flask import Flask, abort, render_template, request
 from sqlalchemy import or_
 
 from config import Config
@@ -76,5 +76,12 @@ def create_app():
             search_query=search_query,
             selected_category=selected_category,
         )
+
+    @app.get("/shop/<int:product_id>")
+    def product_detail(product_id):
+        product = db.session.get(Product, product_id)
+        if product is None:
+            abort(404)
+        return render_template("product_detail.html", product=product)
 
     return app

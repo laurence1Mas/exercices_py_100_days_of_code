@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.name }} — Atelier{% endblock %}
+
+{% block content %}
+<section class="product-detail-section">
+    <div class="container">
+        <nav class="product-breadcrumb" aria-label="Fil d’Ariane">
+            <a href="{{ url_for('home') }}">Accueil</a>
+            <span aria-hidden="true">/</span>
+            <a href="{{ url_for('shop') }}">La boutique</a>
+            <span aria-hidden="true">/</span>
+            <span aria-current="page">{{ product.name }}</span>
+        </nav>
+
+        <div class="row g-5 product-detail-layout">
+            <div class="col-lg-6">
+                <div class="product-detail-image">
+                    {% if product.image %}
+                    <img src="{{ product.image }}" alt="{{ product.name }}">
+                    {% else %}
+                    <div class="product-image-placeholder" aria-hidden="true">
+                        <span>{{ product.name[:1]|upper }}</span>
+                        <small>ATELIER</small>
+                    </div>
+                    {% endif %}
+                    <span class="product-stock-badge
+                        {{ 'product-stock-unavailable' if product.stock <= 0 }}">
+                        {{ 'En stock' if product.stock > 0 else 'Épuisé' }}
+                    </span>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="product-detail-copy">
+                    {% if product.category %}
+                    <p class="product-category">{{ product.category.name }}</p>
+                    {% endif %}
+                    <h1>{{ product.name }}</h1>
+                    <p class="product-detail-price">{{ "%.2f"|format(product.price) }} €</p>
+
+                    {% if product.description %}
+                    <div class="product-detail-description">
+                        {{ product.description| e | replace('\n', '<br>') | safe }}
+                    </div>
+                    {% else %}
+                    <p class="product-detail-description">
+                        Une pièce choisie avec soin par Atelier.
+                    </p>
+                    {% endif %}
+
+                    <div class="product-detail-availability">
+                        <span class="availability-dot
+                            {{ 'availability-dot-out' if product.stock <= 0 }}"
+                            aria-hidden="true"></span>
+                        {% if product.stock > 0 %}
+                        Disponible — {{ product.stock }} en stock
+                        {% else %}
+                        Cette pièce est momentanément indisponible.
+                        {% endif %}
+                    </div>
+
+                    <p class="product-detail-notice">
+                        La commande en ligne sera disponible prochainement.
+                    </p>
+                    <a class="btn btn-terracotta product-back-link"
+                       href="{{ url_for('shop') }}">
+                        <span aria-hidden="true">←</span> Retour à la boutique
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
