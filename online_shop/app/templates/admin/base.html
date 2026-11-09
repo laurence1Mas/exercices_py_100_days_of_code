@@ -42,7 +42,7 @@
                     href="{{ url_for('admin.dashboard') }}">
                     <span aria-hidden="true"><i class="fa-solid fa-gauge-high"></i></span> Vue d’ensemble
                 </a>
-                <a class="admin-sidebar-link{% if request.endpoint == 'admin.products' %} admin-sidebar-active{% endif %}"
+                <a class="admin-sidebar-link{% if request.endpoint in ['admin.products', 'admin.create_product', 'admin.edit_product', 'admin.delete_product'] %} admin-sidebar-active{% endif %}"
                     href="{{ url_for('admin.products') }}">
                     <span aria-hidden="true"><i class="fa-solid fa-box-open"></i></span> Produits
                 </a>
@@ -95,6 +95,7 @@
         </main>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    {% block admin_scripts %}{% endblock %}
 </body>
 
 </html>

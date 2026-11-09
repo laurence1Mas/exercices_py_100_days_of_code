@@ -17,6 +17,9 @@ Flask-SQLAlchemy, Flask-Login, Flask-WTF et Bootstrap.
   l'aperçu, les produits, les commandes, le stock et les statistiques.
 - Gestion CRUD des catégories dans l'espace administrateur. Une catégorie
   contenant des produits ne peut pas être supprimée.
+- Gestion CRUD des produits depuis la page `/admin/products`, avec formulaires
+  dans des modales Bootstrap. Un produit référencé par un panier ou une commande
+  ne peut pas être supprimé.
 - Formulaire de contact avec validation et enregistrement des messages en base ;
   les administrateurs les consultent depuis `/admin/messages`.
 - Inscription avec validation des champs et vérification de l'unicité de
@@ -186,6 +189,11 @@ préserver les relations et les règles de validation.
 5. La page `/admin/categories` permet de créer, lister, modifier et supprimer
    les catégories. Les noms sont uniques sans tenir compte de la casse ; la
    suppression est bloquée tant que la catégorie contient des produits.
+6. La page `/admin/products` permet d'ajouter et de modifier les produits dans
+   des modales Bootstrap, et de confirmer leur suppression dans une modale.
+   Les formulaires valident le nom, le prix, le stock et la catégorie côté
+   serveur. Un produit utilisé dans un panier ou une commande ne peut pas être
+   supprimé.
 
 ### Formulaire de contact
 
@@ -242,9 +250,9 @@ online_shop/
 
 ## Prochaines étapes
 
-1. Ajouter la gestion administrateur des produits et catégories.
-2. Implémenter le checkout, la simulation de paiement et la création de commandes.
-3. Compléter le suivi administrateur des commandes et les tests.
+1. Implémenter le checkout, la simulation de paiement et la création de commandes.
+2. Ajouter la gestion des statuts de traitement des commandes dans l'administration.
+3. Compléter les tests fonctionnels et préparer le déploiement.
 
 Le serveur lancé par `python run.py` est un serveur de développement. Utilisez
 un serveur WSGI adapté pour un déploiement en production.

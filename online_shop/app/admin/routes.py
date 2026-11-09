@@ -3,9 +3,17 @@ from flask_login import current_user, login_required
 from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError
 
-from app.admin.forms import CategoryForm
+from app.admin.forms import CategoryForm, ProductForm
 from app.extensions import db
-from app.models import Category, ContactMessage, Order, Product, User
+from app.models import (
+    CartItem,
+    Category,
+    ContactMessage,
+    Order,
+    OrderItem,
+    Product,
+    User,
+)
 
 
 admin = Blueprint("admin", __name__, url_prefix="/admin")
@@ -44,10 +52,141 @@ def dashboard():
 @admin.get("/products")
 @login_required
 def products():
+    return _render_products_page()
+
+
+@admin.post("/products/new")
+@login_required
+def create_product():
+    form = _product_form()
+    if form.validate_on_submit():
+        product = _product_from_form(form)
+        db.session.add(product)
+        try:
+            db.session.commit()
+        except IntegrityError:
+            db.session.rollback()
+            flash(
+                "Le produit n’a pas pu être enregistré. "
+                "Vérifiez la catégorie choisie.",
+                "error",
+            )
+            return _render_products_page(
+                product_form=form,
+                active_modal="create",
+            )
+        else:
+            flash("Le produit a été créé.", "success")
+            return redirect(url_for("admin.products"))
+
+    return _render_products_page(product_form=form, active_modal="create")
+
+
+@admin.post("/products/<int:product_id>/edit")
+@login_required
+def edit_product(product_id):
+    product = db.get_or_404(Product, product_id)
+    form = _product_form(obj=product)
+    if form.validate_on_submit():
+        form.populate_obj(product)
+        product.price = float(form.price.data)
+        try:
+            db.session.commit()
+        except IntegrityError:
+            db.session.rollback()
+            flash(
+                "Le produit n’a pas pu être modifié. "
+                "Vérifiez la catégorie choisie.",
+                "error",
+            )
+            return _render_products_page(
+                product_form=form,
+                active_modal="edit",
+                editing_product=product,
+            )
+        else:
+            flash("Le produit a été modifié.", "success")
+            return redirect(url_for("admin.products"))
+
+    return _render_products_page(
+        product_form=form,
+        active_modal="edit",
+        editing_product=product,
+    )
+
+
+@admin.post("/products/<int:product_id>/delete")
+@login_required
+def delete_product(product_id):
+    product = db.get_or_404(Product, product_id)
+    has_cart_references = db.session.scalar(
+        db.select(CartItem.id).where(CartItem.product_id == product.id).limit(1)
+    )
+    has_order_references = db.session.scalar(
+        db.select(OrderItem.id).where(OrderItem.product_id == product.id).limit(1)
+    )
+    if has_cart_references or has_order_references:
+        flash(
+            "Ce produit est utilisé dans un panier ou une commande et ne peut pas être supprimé.",
+            "error",
+        )
+    else:
+        db.session.delete(product)
+        try:
+            db.session.commit()
+        except IntegrityError:
+            db.session.rollback()
+            flash(
+                "Le produit n’a pas pu être supprimé en raison de références "
+                "existantes.",
+                "error",
+            )
+        else:
+            flash("Le produit a été supprimé.", "success")
+    return redirect(url_for("admin.products"))
+
+
+def _product_form(obj=None):
+    form = ProductForm(obj=obj)
+    form.category_id.choices = [
+        (category.id, category.name)
+        for category in db.session.scalars(
+            db.select(Category).order_by(Category.name)
+        ).all()
+    ]
+    return form
+
+
+def _product_from_form(form):
+    return Product(
+        name=form.name.data,
+        description=form.description.data or None,
+        price=float(form.price.data),
+        stock=form.stock.data,
+        image=form.image.data or None,
+        category_id=form.category_id.data,
+    )
+
+
+def _render_products_page(
+    product_form=None,
+    active_modal=None,
+    editing_product=None,
+):
     products = db.session.scalars(
-        db.select(Product).order_by(Product.name)
+        db.select(Product).order_by(Product.name, Product.id)
     ).all()
-    return render_template("admin/products.html", products=products)
+    categories = db.session.scalars(
+        db.select(Category).order_by(Category.name)
+    ).all()
+    return render_template(
+        "admin/products.html",
+        products=products,
+        categories=categories,
+        product_form=product_form if product_form is not None else _product_form(),
+        active_modal=active_modal,
+        editing_product=editing_product,
+    )
 
 
 @admin.get("/categories")
