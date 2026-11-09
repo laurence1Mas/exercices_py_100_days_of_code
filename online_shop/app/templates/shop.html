@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Atelier — de belles trouvailles, bientôt{% endblock %}
+
+{% block content %}
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6 hero-copy">
+                <p class="eyebrow"><span class="eyebrow-line"></span> Decouvrez des bons produits</p>
+                <h1>Le quotidien mérite<br>un peu <em>plus de beau.</em></h1>
+                <p class="hero-description">
+                    Atelier prépare une sélection d’objets choisis avec soin,
+                    pour apporter une touche d’inspiration à chaque journée.
+                </p>
+
+                <!-- section pour le filtrage des produits -->
+                 <div class="fiter_section">
+                    <form method="get" action="{{ url_for('shop') }}">
+                        <label for="category">Filtrer par catégorie :</label>
+                        <select name="category" id="category">
+                            <option value="">Toutes les catégories</option>
+                            {% for category in categories %}
+                                <option value="{{ category.id }}" {% if selected_category == category.id %}selected{% endif %}>
+                                    {{ category.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit">Filtrer</button>
+                    </form>
+                 </div>
+                 <!-- liste des produits avec du grid column -->
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
