@@ -11,9 +11,6 @@ class Config:
         "SECRET_KEY",
         "dev-secret-key-change-later"
     )
-    ADMIN_EMAIL = os.environ.get("ADMIN_EMAIL", "").strip().lower()
-    ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "")
-
     SQLALCHEMY_DATABASE_URI = (
         "sqlite:///" + os.path.join(BASE_DIR, "ecommerce.db")
     )
