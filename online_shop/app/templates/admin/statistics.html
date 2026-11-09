@@ -1,0 +1,68 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Statistiques — Administration Atelier{% endblock %}
+
+{% block admin_content %}
+<section class="admin-page">
+    <div class="admin-content">
+        <div class="admin-heading">
+            <div>
+                <p class="eyebrow"><span class="eyebrow-line"></span> PERFORMANCE</p>
+                <h1>Statistiques</h1>
+                <p>Les principaux indicateurs de votre boutique, mis à jour en temps réel.</p>
+            </div>
+        </div>
+
+        <div class="row g-3 admin-stats">
+            <div class="col-6 col-xl">
+                <article class="admin-stat-card">
+                    <span class="admin-stat-label">PRODUITS</span>
+                    <strong>{{ product_count }}</strong>
+                    <span class="admin-stat-caption">dans le catalogue</span>
+                </article>
+            </div>
+            <div class="col-6 col-xl">
+                <article class="admin-stat-card">
+                    <span class="admin-stat-label">CLIENTS</span>
+                    <strong>{{ customer_count }}</strong>
+                    <span class="admin-stat-caption">comptes clients</span>
+                </article>
+            </div>
+            <div class="col-6 col-xl">
+                <article class="admin-stat-card">
+                    <span class="admin-stat-label">COMMANDES</span>
+                    <strong>{{ order_count }}</strong>
+                    <span class="admin-stat-caption">au total</span>
+                </article>
+            </div>
+            <div class="col-6 col-xl">
+                <article class="admin-stat-card">
+                    <span class="admin-stat-label">À TRAITER</span>
+                    <strong>{{ pending_count }}</strong>
+                    <span class="admin-stat-caption">commandes en attente</span>
+                </article>
+            </div>
+            <div class="col-12 col-xl">
+                <article class="admin-stat-card admin-stat-revenue">
+                    <span class="admin-stat-label">REVENUS ENCAISSÉS</span>
+                    <strong>{{ "%.2f"|format(paid_revenue) }} €</strong>
+                    <span class="admin-stat-caption">commandes payées</span>
+                </article>
+            </div>
+        </div>
+
+        <div class="admin-panel mt-4">
+            <div class="admin-panel-heading">
+                <div>
+                    <p class="eyebrow"><span class="eyebrow-line"></span> DÉTAIL</p>
+                    <h2>Interprétation des indicateurs</h2>
+                </div>
+            </div>
+            <div class="admin-stat-explanations">
+                <p>Les revenus incluent uniquement les commandes dont le paiement est marqué comme payé.</p>
+                <p>Les commandes à traiter correspondent aux commandes dont le statut est « en attente ».</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

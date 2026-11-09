@@ -1,0 +1,77 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Stock — Administration Atelier{% endblock %}
+
+{% block admin_content %}
+<section class="admin-page">
+    <div class="admin-content">
+        <div class="admin-heading">
+            <div>
+                <p class="eyebrow"><span class="eyebrow-line"></span> INVENTAIRE</p>
+                <h1>Suivi du stock</h1>
+                <p>Consultez les quantités disponibles pour chaque produit.</p>
+            </div>
+        </div>
+
+        <div class="row g-3 admin-stats">
+            <div class="col-12 col-md-6 col-xl-4">
+                <article class="admin-stat-card">
+                    <span class="admin-stat-label">UNITÉS EN STOCK</span>
+                    <strong>{{ total_stock }}</strong>
+                    <span class="admin-stat-caption">tous produits confondus</span>
+                </article>
+            </div>
+            <div class="col-12 col-md-6 col-xl-4">
+                <article class="admin-stat-card">
+                    <span class="admin-stat-label">RÉFÉRENCES</span>
+                    <strong>{{ products|length }}</strong>
+                    <span class="admin-stat-caption">produits au catalogue</span>
+                </article>
+            </div>
+        </div>
+
+        <section class="admin-panel mt-4">
+            <div class="admin-panel-heading">
+                <div>
+                    <p class="eyebrow"><span class="eyebrow-line"></span> DISPONIBILITÉ</p>
+                    <h2>État des stocks</h2>
+                </div>
+            </div>
+            {% if products %}
+            <div class="table-responsive">
+                <table class="table admin-orders-table align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th scope="col">Produit</th>
+                            <th scope="col">Catégorie</th>
+                            <th scope="col">Disponibilité</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in products %}
+                        <tr>
+                            <th scope="row">{{ product.name }}</th>
+                            <td>{{ product.category.name }}</td>
+                            <td>
+                                {% if product.stock > 0 %}
+                                {{ product.stock }} unité(s)
+                                {% else %}
+                                <span class="order-status-badge order-status-cancelled">Épuisé</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="admin-empty">
+                <span class="empty-mark" aria-hidden="true">✳</span>
+                <h3>Aucun produit à suivre</h3>
+                <p>Les stocks apparaîtront ici avec les produits du catalogue.</p>
+            </div>
+            {% endif %}
+        </section>
+    </div>
+</section>
+{% endblock %}

@@ -13,7 +13,8 @@ Flask-SQLAlchemy, Flask-Login, Flask-WTF et Bootstrap.
 - Panier persistant par client : ajout depuis les fiches produit, modification
   des quantités et suppression avec vérification du stock.
 - Historique des commandes et détail privé des commandes du client connecté.
-- Tableau de bord réservé au rôle `ADMIN`, avec statistiques et commandes récentes.
+- Espace administrateur réservé au rôle `ADMIN`, avec des pages distinctes pour
+  l'aperçu, les produits, les commandes, le stock et les statistiques.
 - Inscription avec validation des champs et vérification de l'unicité de
   l'adresse e-mail (sans tenir compte de la casse).
 - Hachage des mots de passe avec Werkzeug.
@@ -96,10 +97,14 @@ définissez une clé privée dans l'environnement avant tout déploiement.
 
 1. `python seed_admin.py` crée le compte administrateur initial dans la base
    configurée, après saisie interactive de l’adresse et du mot de passe.
-2. Le tableau de bord `/admin/` exige une connexion et le rôle exact `ADMIN` ;
+2. Toutes les routes `/admin/` exigent une connexion et le rôle exact `ADMIN` ;
    un client connecté reçoit une réponse 403.
-3. Le tableau de bord affiche les nombres de produits, clients et commandes,
-   les commandes en attente, les revenus payés et les cinq dernières commandes.
+3. La barre latérale mène aux pages `/admin/` (aperçu), `/admin/products`,
+   `/admin/orders`, `/admin/stock` et `/admin/statistics`. La page active est
+   indiquée dans la navigation.
+4. L'aperçu affiche les indicateurs principaux et les cinq dernières commandes.
+   Les pages Produits, Commandes et Stock présentent leurs listes respectives ;
+   la page Statistiques détaille les indicateurs de ventes et d'activité.
 
 ### Historique et détail des commandes
 

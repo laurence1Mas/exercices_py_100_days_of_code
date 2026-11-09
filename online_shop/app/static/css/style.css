@@ -2201,6 +2201,37 @@ body {
     }
 }
 
+.admin-quick-links {
+    display: grid;
+    gap: 5px;
+    margin-top: 20px;
+}
+
+.admin-quick-links a {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 0;
+    border-top: 1px solid #e9ebef;
+    color: #555e6b;
+    font-size: 0.73rem;
+    text-decoration: none;
+}
+
+.admin-quick-links a:hover {
+    color: #9b5b43;
+}
+
+.admin-stat-explanations {
+    padding: 0 23px 15px;
+    color: #7a818c;
+    font-size: 0.74rem;
+}
+
+.admin-stat-explanations p {
+    margin: 0 0 8px;
+}
+
 @media (prefers-reduced-motion: reduce) {
     html {
         scroll-behavior: auto;

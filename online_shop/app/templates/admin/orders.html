@@ -1,0 +1,70 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Commandes — Administration Atelier{% endblock %}
+
+{% block admin_content %}
+<section class="admin-page">
+    <div class="admin-content">
+        <div class="admin-heading">
+            <div>
+                <p class="eyebrow"><span class="eyebrow-line"></span> SUIVI</p>
+                <h1>Commandes</h1>
+                <p>Consultez les commandes passées par les clients de la boutique.</p>
+            </div>
+        </div>
+
+        <section class="admin-panel">
+            <div class="admin-panel-heading">
+                <div>
+                    <p class="eyebrow"><span class="eyebrow-line"></span> HISTORIQUE</p>
+                    <h2>Toutes les commandes</h2>
+                </div>
+                <span class="admin-panel-count">{{ orders|length }}</span>
+            </div>
+            {% if orders %}
+            <div class="table-responsive">
+                <table class="table admin-orders-table align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th scope="col">Commande</th>
+                            <th scope="col">Client</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Statut</th>
+                            <th scope="col">Paiement</th>
+                            <th scope="col" class="text-end">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in orders %}
+                        <tr>
+                            <th scope="row">#{{ order.id }}</th>
+                            <td>
+                                <span class="admin-customer-name">{{ order.user.name }}</span>
+                                <span class="admin-customer-email">{{ order.user.email }}</span>
+                            </td>
+                            <td>{{ order.created_at.strftime("%d/%m/%Y") }}</td>
+                            <td>
+                                <span class="order-status-badge order-status-{{ order.status|lower }}">
+                                    {{ order.status|replace("_", " ")|capitalize }}
+                                </span>
+                            </td>
+                            <td>{{ order.payment_status|replace("_", " ")|capitalize }}</td>
+                            <td class="text-end fw-semibold">
+                                {{ "%.2f"|format(order.total_amount) }} €
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="admin-empty">
+                <span class="empty-mark" aria-hidden="true">✳</span>
+                <h3>Aucune commande pour le moment</h3>
+                <p>Les commandes apparaîtront ici lorsqu’un client en passera une.</p>
+            </div>
+            {% endif %}
+        </section>
+    </div>
+</section>
+{% endblock %}

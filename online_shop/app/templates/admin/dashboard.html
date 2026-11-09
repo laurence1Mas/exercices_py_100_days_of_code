@@ -3,7 +3,7 @@
 {% block title %}Administration — Atelier{% endblock %}
 
 {% block admin_content %}
-<section class="admin-page" id="overview">
+<section class="admin-page">
     <div class="admin-content">
         <div class="admin-heading">
             <div>
@@ -16,7 +16,7 @@
             </a>
         </div>
 
-        <div class="row g-3 admin-stats" id="statistics">
+        <div class="row g-3 admin-stats">
             <div class="col-6 col-xl">
                 <article class="admin-stat-card">
                     <span class="admin-stat-label">PRODUITS</span>
@@ -55,7 +55,7 @@
         </div>
 
         <div class="admin-content-grid">
-            <section class="admin-panel" id="orders">
+            <section class="admin-panel">
                 <div class="admin-panel-heading">
                     <div>
                         <p class="eyebrow"><span class="eyebrow-line"></span> SUIVI</p>
@@ -107,27 +107,16 @@
                 {% endif %}
             </section>
 
-            <aside class="admin-panel admin-next-panel" id="products">
-                <p class="eyebrow"><span class="eyebrow-line"></span> CATALOGUE</p>
-                <h2>Gérez votre sélection.</h2>
-                <p>
-                    La gestion et la modification des produits seront bientôt
-                    disponibles depuis cet espace.
-                </p>
-                <a class="admin-store-link" href="{{ url_for('shop') }}">
-                    Parcourir le catalogue <span aria-hidden="true">→</span>
-                </a>
-            </aside>
-        </div>
-        <div class="admin-stock-section" id="stock">
-            <div class="admin-stock-heading">
-                <div>
-                    <p class="eyebrow"><span class="eyebrow-line"></span> INVENTAIRE</p>
-                    <h2>Suivi du stock</h2>
+            <aside class="admin-panel admin-next-panel">
+                <p class="eyebrow"><span class="eyebrow-line"></span> GESTION</p>
+                <h2>Accédez rapidement à vos espaces.</h2>
+                <div class="admin-quick-links">
+                    <a href="{{ url_for('admin.products') }}">Voir les produits <span aria-hidden="true">→</span></a>
+                    <a href="{{ url_for('admin.orders') }}">Consulter les commandes <span aria-hidden="true">→</span></a>
+                    <a href="{{ url_for('admin.stock') }}">Suivre le stock <span aria-hidden="true">→</span></a>
+                    <a href="{{ url_for('admin.statistics') }}">Voir les statistiques <span aria-hidden="true">→</span></a>
                 </div>
-                <span class="admin-coming-soon">GESTION BIENTÔT DISPONIBLE</span>
-            </div>
-            <p>Les alertes de stock et leur mise à jour seront ajoutées dans une prochaine étape.</p>
+            </aside>
         </div>
     </div>
 </section>
