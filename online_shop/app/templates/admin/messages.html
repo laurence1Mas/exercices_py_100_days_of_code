@@ -9,7 +9,11 @@
             <div>
                 <p class="eyebrow"><span class="eyebrow-line"></span> BOÎTE DE RÉCEPTION</p>
                 <h1>Messages de contact</h1>
-                <p>Les 100 messages les plus récents envoyés depuis le formulaire.</p>
+                <p>Consultez les demandes, répondez directement et supprimez les messages traités.</p>
+            </div>
+            <div class="admin-message-total">
+                <strong>{{ messages|length }}</strong>
+                <span>{{ "message récent" if messages|length == 1 else "messages récents" }}</span>
             </div>
         </div>
 
@@ -19,17 +23,28 @@
             <article class="admin-panel admin-message-card">
                 <div class="admin-message-header">
                     <div>
-                        <h2>{{ message.subject }}</h2>
+                        <h2>
+                            <a class="admin-message-subject"
+                               href="{{ url_for('admin.message_detail', message_id=message.id) }}">
+                                {{ message.subject }}
+                            </a>
+                        </h2>
                         <p>
                             <strong>{{ message.name }}</strong>
                             · <a href="mailto:{{ message.email }}">{{ message.email }}</a>
                         </p>
                     </div>
-                    <time datetime="{{ message.created_at.isoformat() }}">
-                        {{ message.created_at.strftime("%d/%m/%Y à %H:%M") }}
-                    </time>
+                    <div class="admin-message-actions">
+                        <time datetime="{{ message.created_at.isoformat() }}">
+                            {{ message.created_at.strftime("%d/%m/%Y à %H:%M") }}
+                        </time>
+                        <a class="btn btn-sm btn-outline-secondary"
+                           href="{{ url_for('admin.message_detail', message_id=message.id) }}">
+                            Lire le message
+                        </a>
+                    </div>
                 </div>
-                <p class="admin-message-body">{{ message.message }}</p>
+                <p class="admin-message-body admin-message-excerpt">{{ message.message }}</p>
             </article>
             {% endfor %}
         </div>

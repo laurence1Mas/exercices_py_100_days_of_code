@@ -54,7 +54,7 @@
                     href="{{ url_for('admin.orders') }}">
                     <span aria-hidden="true"><i class="fa-solid fa-clipboard-list"></i></span> Commandes
                 </a>
-                <a class="admin-sidebar-link{% if request.endpoint == 'admin.messages' %} admin-sidebar-active{% endif %}"
+                <a class="admin-sidebar-link{% if request.endpoint in ['admin.messages', 'admin.message_detail', 'admin.delete_message'] %} admin-sidebar-active{% endif %}"
                     href="{{ url_for('admin.messages') }}">
                     <span aria-hidden="true"><i class="fa-solid fa-envelope"></i></span> Messages
                 </a>

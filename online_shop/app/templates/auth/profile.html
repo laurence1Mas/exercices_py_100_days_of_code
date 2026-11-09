@@ -1,20 +1,120 @@
 {% extends "base.html" %}
 
-{% block title %}Mon profil - Boutique en ligne{% endblock %}
+{% block title %}Mon espace — Atelier{% endblock %}
 
 {% block content %}
-<h1 class="h2">Mon profil</h1>
-<dl class="row mt-4">
-    <dt class="col-sm-3">Nom</dt>
-    <dd class="col-sm-9">{{ current_user.name }}</dd>
-    <dt class="col-sm-3">Adresse e-mail</dt>
-    <dd class="col-sm-9">{{ current_user.email }}</dd>
-    <dt class="col-sm-3">Rôle</dt>
-    <dd class="col-sm-9">{{ current_user.role }}</dd>
-</dl>
-{% if current_user.role == "ADMIN" %}
-<a class="btn btn-dark" href="{{ url_for('admin.dashboard') }}">
-    Ouvrir le tableau de bord administrateur
-</a>
-{% endif %}
+<section class="profile-page">
+    <div class="container">
+        <div class="profile-heading">
+            <div>
+                <p class="eyebrow"><span class="eyebrow-line"></span> VOTRE ESPACE PERSONNEL</p>
+                <h1>Bonjour, <em>{{ current_user.name.split()[0] }}</em>.</h1>
+                <p>Retrouvez vos informations et accédez rapidement à vos achats.</p>
+            </div>
+            <span class="profile-member-since">
+                <i class="fa-regular fa-calendar" aria-hidden="true"></i>
+                Membre depuis le {{ current_user.created_at.strftime("%d/%m/%Y") }}
+            </span>
+        </div>
+
+        <div class="profile-overview">
+            <article class="profile-stat-card">
+                <span class="profile-stat-icon"><i class="fa-solid fa-box" aria-hidden="true"></i></span>
+                <span class="profile-stat-label">MES COMMANDES</span>
+                <strong>{{ order_count }}</strong>
+                <a href="{{ url_for('orders.index') }}">
+                    Consulter l’historique
+                    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                </a>
+            </article>
+            <article class="profile-stat-card">
+                <span class="profile-stat-icon"><i class="fa-solid fa-basket-shopping" aria-hidden="true"></i></span>
+                <span class="profile-stat-label">MON PANIER</span>
+                <strong>{{ cart_item_count }}</strong>
+                <a href="{{ url_for('cart.index') }}">
+                    Voir ma sélection
+                    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                </a>
+            </article>
+            <article class="profile-stat-card profile-account-card">
+                <span class="profile-stat-icon"><i class="fa-solid fa-user-check" aria-hidden="true"></i></span>
+                <span class="profile-stat-label">MON COMPTE</span>
+                <strong>{{ "Administrateur" if current_user.role == "ADMIN" else "Client" }}</strong>
+                {% if current_user.role == "ADMIN" %}
+                <a href="{{ url_for('admin.dashboard') }}">
+                    Ouvrir l’administration
+                    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                </a>
+                {% else %}
+                <span class="profile-card-caption">Espace personnel actif</span>
+                {% endif %}
+            </article>
+        </div>
+
+        <div class="profile-content-grid">
+            <section class="profile-panel">
+                <div class="profile-panel-heading">
+                    <div>
+                        <p class="eyebrow"><span class="eyebrow-line"></span> INFORMATIONS</p>
+                        <h2>Mes coordonnées</h2>
+                    </div>
+                    <span class="profile-avatar" aria-hidden="true">{{ current_user.name[:1]|upper }}</span>
+                </div>
+                <dl class="profile-details">
+                    <div>
+                        <dt>Nom complet</dt>
+                        <dd>{{ current_user.name }}</dd>
+                    </div>
+                    <div>
+                        <dt>Adresse e-mail</dt>
+                        <dd><a href="mailto:{{ current_user.email }}">{{ current_user.email }}</a></dd>
+                    </div>
+                    <div>
+                        <dt>Type de compte</dt>
+                        <dd>{{ "Administrateur" if current_user.role == "ADMIN" else "Client" }}</dd>
+                    </div>
+                </dl>
+                <p class="profile-security-note">
+                    <i class="fa-solid fa-lock" aria-hidden="true"></i>
+                    Votre mot de passe est protégé et n’est jamais affiché sur cette page.
+                </p>
+            </section>
+
+            <section class="profile-panel profile-recent-orders">
+                <div class="profile-panel-heading">
+                    <div>
+                        <p class="eyebrow"><span class="eyebrow-line"></span> SUIVI</p>
+                        <h2>Dernières commandes</h2>
+                    </div>
+                    <a class="profile-all-orders" href="{{ url_for('orders.index') }}">
+                        Tout voir <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                    </a>
+                </div>
+                {% if recent_orders %}
+                <div class="profile-order-list">
+                    {% for order in recent_orders %}
+                    <a class="profile-order-row" href="{{ url_for('orders.detail', order_id=order.id) }}">
+                        <span class="profile-order-icon">
+                            <i class="fa-solid fa-receipt" aria-hidden="true"></i>
+                        </span>
+                        <span class="profile-order-info">
+                            <strong>Commande #{{ order.id }}</strong>
+                            <small>{{ order.created_at.strftime("%d/%m/%Y") }}</small>
+                        </span>
+                        <strong class="profile-order-total">{{ "%.2f"|format(order.total_amount) }} €</strong>
+                        <i class="fa-solid fa-chevron-right profile-order-chevron" aria-hidden="true"></i>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="profile-orders-empty">
+                    <i class="fa-solid fa-sparkles" aria-hidden="true"></i>
+                    <p>Vos commandes apparaîtront ici après votre premier achat.</p>
+                    <a href="{{ url_for('shop') }}">Découvrir la boutique</a>
+                </div>
+                {% endif %}
+            </section>
+        </div>
+    </div>
+</section>
 {% endblock %}

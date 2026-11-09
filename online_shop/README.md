@@ -23,7 +23,8 @@ Flask-SQLAlchemy, Flask-Login, Flask-WTF et Bootstrap.
   JPG, PNG ou WEBP jusqu'à 5 Mo ; elles sont vérifiées puis enregistrées dans
   `app/static/uploads/products` sous un nom généré par l'application.
 - Formulaire de contact avec validation et enregistrement des messages en base ;
-  les administrateurs les consultent depuis `/admin/messages`.
+  les administrateurs les lisent et les suppriment depuis `/admin/messages`,
+  avec un accès direct pour répondre par e-mail.
 - Inscription avec validation des champs et vérification de l'unicité de
   l'adresse e-mail (sans tenir compte de la casse).
 - Hachage des mots de passe avec Werkzeug.
@@ -195,6 +196,16 @@ préserver les relations et les règles de validation.
    Les formulaires valident le nom, le prix, le stock et la catégorie côté
    serveur. Un produit utilisé dans un panier ou une commande ne peut pas être
    supprimé.
+7. La boîte de réception `/admin/messages` liste les 100 derniers messages.
+   Chaque message possède une fiche détaillée ; l'administrateur peut ouvrir
+   son client e-mail pour répondre ou supprimer le message avec confirmation.
+
+### Espace client
+
+1. `/auth/profile` présente les coordonnées du compte, le nombre d'articles
+   dans le panier, le nombre de commandes et les trois dernières commandes.
+2. Des liens rapides ouvrent le panier, l'historique des commandes et, pour un
+   compte `ADMIN`, le tableau de bord d'administration.
 
 ### Formulaire de contact
 

@@ -499,6 +499,28 @@ def messages():
     return render_template("admin/messages.html", messages=messages)
 
 
+@admin.get("/messages/<int:message_id>")
+@login_required
+def message_detail(message_id):
+    message = db.get_or_404(ContactMessage, message_id)
+    return render_template("admin/message_detail.html", message=message)
+
+
+@admin.post("/messages/<int:message_id>/delete")
+@login_required
+def delete_message(message_id):
+    message = db.get_or_404(ContactMessage, message_id)
+    db.session.delete(message)
+    try:
+        db.session.commit()
+    except SQLAlchemyError:
+        db.session.rollback()
+        raise
+
+    flash("Le message a été supprimé.", "success")
+    return redirect(url_for("admin.messages"))
+
+
 @admin.get("/stock")
 @login_required
 def stock():

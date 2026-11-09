@@ -1,0 +1,83 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ message.subject }} — Messages Atelier{% endblock %}
+
+{% block admin_content %}
+<section class="admin-page">
+    <div class="admin-content">
+        <div class="admin-heading">
+            <div>
+                <p class="eyebrow"><span class="eyebrow-line"></span> BOÎTE DE RÉCEPTION</p>
+                <h1>Message de contact</h1>
+                <p>Reçu le {{ message.created_at.strftime("%d/%m/%Y à %H:%M") }}</p>
+            </div>
+            <a class="admin-store-link" href="{{ url_for('admin.messages') }}">
+                <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+                Tous les messages
+            </a>
+        </div>
+
+        <article class="admin-panel admin-message-detail">
+            <div class="admin-message-detail-heading">
+                <span class="admin-message-detail-icon">
+                    <i class="fa-solid fa-envelope-open-text" aria-hidden="true"></i>
+                </span>
+                <div>
+                    <p class="eyebrow"><span class="eyebrow-line"></span> SUJET</p>
+                    <h2>{{ message.subject }}</h2>
+                </div>
+            </div>
+
+            <dl class="admin-message-contact">
+                <div>
+                    <dt>De</dt>
+                    <dd>{{ message.name }}</dd>
+                </div>
+                <div>
+                    <dt>Adresse e-mail</dt>
+                    <dd><a href="mailto:{{ message.email }}">{{ message.email }}</a></dd>
+                </div>
+                <div>
+                    <dt>Reçu le</dt>
+                    <dd>{{ message.created_at.strftime("%d/%m/%Y à %H:%M") }}</dd>
+                </div>
+            </dl>
+
+            <div class="admin-message-detail-body">
+                <p class="eyebrow"><span class="eyebrow-line"></span> MESSAGE</p>
+                <p>{{ message.message }}</p>
+            </div>
+
+            <div class="admin-message-detail-actions">
+                <a class="btn btn-terracotta"
+                   href="mailto:{{ message.email }}?subject={{ ('Re: ' ~ message.subject)|urlencode }}">
+                    <i class="fa-solid fa-reply" aria-hidden="true"></i>
+                    Répondre par e-mail
+                </a>
+                <form method="post"
+                      action="{{ url_for('admin.delete_message', message_id=message.id) }}"
+                      data-delete-message>
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button class="btn btn-outline-danger" type="submit">
+                        <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                        Supprimer le message
+                    </button>
+                </form>
+            </div>
+        </article>
+    </div>
+</section>
+{% endblock %}
+
+{% block admin_scripts %}
+<script>
+    const deleteMessageForm = document.querySelector("[data-delete-message]");
+    if (deleteMessageForm) {
+        deleteMessageForm.addEventListener("submit", (event) => {
+            if (!window.confirm("Supprimer définitivement ce message ?")) {
+                event.preventDefault();
+            }
+        });
+    }
+</script>
+{% endblock %}
