@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Validation de la commande — Atelier{% endblock %}
+
+{% block content %}
+<section class="orders-page">
+    <div class="container">
+        <nav class="product-breadcrumb" aria-label="Fil d’Ariane">
+            <a href="{{ url_for('home') }}">Accueil</a>
+            <span aria-hidden="true">/</span>
+            <a href="{{ url_for('cart.index') }}">Mon panier</a>
+            <span aria-hidden="true">/</span>
+            <span aria-current="page">Validation</span>
+        </nav>
+
+        <div class="orders-heading">
+            <div>
+                <p class="eyebrow"><span class="eyebrow-line"></span> DERNIÈRE ÉTAPE</p>
+                <h1>Votre commande</h1>
+                <p>Vérifiez votre sélection avant de confirmer le paiement simulé.</p>
+            </div>
+            <a class="orders-back-link" href="{{ url_for('cart.index') }}">
+                <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+                Modifier mon panier
+            </a>
+        </div>
+
+        <div class="checkout-layout">
+            <section class="order-items-panel" aria-labelledby="checkout-items-title">
+                <h2 id="checkout-items-title">Récapitulatif des articles</h2>
+                {% for item in items %}
+                <article class="order-item">
+                    <div class="order-item-image">
+                        {% if item.product.image %}
+                        <img src="{{ item.product.image }}" alt="{{ item.product.name }}" loading="lazy">
+                        {% else %}
+                        <span aria-hidden="true">{{ item.product.name[:1]|upper }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="order-item-info">
+                        <h3>{{ item.product.name }}</h3>
+                        <p>Quantité : {{ item.quantity }}</p>
+                    </div>
+                    <div class="order-item-price">
+                        <span>{{ "%.2f"|format(item.product.price) }} € / unité</span>
+                        <strong>{{ "%.2f"|format(item.product.price * item.quantity) }} €</strong>
+                    </div>
+                </article>
+                {% endfor %}
+            </section>
+
+            <aside class="order-summary-panel">
+                <p class="eyebrow"><span class="eyebrow-line"></span> PAIEMENT</p>
+                <h2>Confirmation</h2>
+                <div class="order-summary-row">
+                    <span>Articles</span>
+                    <strong>{{ items|sum(attribute="quantity") }}</strong>
+                </div>
+                <div class="order-summary-row">
+                    <span>Livraison</span>
+                    <strong>Offerte</strong>
+                </div>
+                <div class="order-summary-total">
+                    <span>Total à régler</span>
+                    <strong>{{ "%.2f"|format(total) }} €</strong>
+                </div>
+                <div class="checkout-simulation-note">
+                    <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                    Paiement de démonstration : aucun numéro de carte ni donnée bancaire
+                    ne sera demandé ou enregistré.
+                </div>
+                {% if available %}
+                <form method="post" action="{{ url_for('cart.checkout') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button class="btn cart-checkout-button" type="submit">
+                        Confirmer et payer {{ "%.2f"|format(total) }} €
+                    </button>
+                </form>
+                {% else %}
+                <div class="alert alert-warning checkout-stock-warning" role="alert">
+                    Le stock disponible a changé. Retournez au panier pour ajuster les quantités.
+                </div>
+                <a class="btn cart-checkout-button" href="{{ url_for('cart.index') }}">
+                    Vérifier mon panier
+                </a>
+                {% endif %}
+            </aside>
+        </div>
+    </div>
+</section>
+{% endblock %}

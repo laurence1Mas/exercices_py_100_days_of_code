@@ -43,7 +43,7 @@
                 <article class="admin-stat-card">
                     <span class="admin-stat-label">À TRAITER</span>
                     <strong>{{ pending_count }}</strong>
-                    <span class="admin-stat-caption">commandes en attente</span>
+                    <span class="admin-stat-caption">commandes à traiter</span>
                 </article>
             </div>
             <div class="col-12 col-xl">
@@ -88,7 +88,7 @@
                                 <td>{{ order.created_at.strftime("%d/%m/%Y") }}</td>
                                 <td>
                                     <span class="order-status-badge order-status-{{ order.status|lower }}">
-                                        {{ order.status|replace("_", " ")|capitalize }}
+                                        {{ order_status_labels.get(order.status, order.status|replace("_", " ")|capitalize) }}
                                     </span>
                                 </td>
                                 <td class="text-end fw-semibold">
@@ -113,6 +113,7 @@
                 <h2>Accédez rapidement à vos espaces.</h2>
                 <div class="admin-quick-links">
                     <a href="{{ url_for('admin.products') }}">Voir les produits <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+                    <a href="{{ url_for('admin.categories') }}">Gérer les catégories <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
                     <a href="{{ url_for('admin.orders') }}">Consulter les commandes <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
                     <a href="{{ url_for('admin.stock') }}">Suivre le stock <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
                     <a href="{{ url_for('admin.statistics') }}">Voir les statistiques <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>

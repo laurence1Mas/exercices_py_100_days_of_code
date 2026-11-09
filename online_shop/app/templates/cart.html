@@ -12,9 +12,9 @@
                 <p>
                     {% set item_count = items|sum(attribute="quantity") %}
                     {% if item_count == 1 %}
-                        1 pièce vous attend.
+                    1 pièce vous attend.
                     {% else %}
-                        {{ item_count }} pièces vous attendent.
+                    {{ item_count }} pièces vous attendent.
                     {% endif %}
                 </p>
             </div>
@@ -30,10 +30,9 @@
                 {% for item in items %}
                 <article class="cart-item">
                     <a class="cart-item-image" href="{{ url_for('product_detail', product_id=item.product.id) }}"
-                       aria-label="Voir {{ item.product.name }}">
+                        aria-label="Voir {{ item.product.name }}">
                         {% if item.product.image %}
-                        <img src="{{ item.product.image }}" alt="{{ item.product.name }}"
-                             loading="lazy">
+                        <img src="{{ item.product.image }}" alt="{{ item.product.name }}" loading="lazy">
                         {% else %}
                         <span aria-hidden="true">{{ item.product.name[:1]|upper }}</span>
                         {% endif %}
@@ -64,19 +63,17 @@
                     <div class="cart-item-controls">
                         {% if item.product.stock > 0 %}
                         <form class="cart-quantity-form" method="post"
-                              action="{{ url_for('cart.update', item_id=item.id) }}">
+                            action="{{ url_for('cart.update', item_id=item.id) }}">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <label class="visually-hidden" for="quantity-{{ item.id }}">
                                 Quantité de {{ item.product.name }}
                             </label>
-                            <input id="quantity-{{ item.id }}" name="quantity" type="number"
-                                   min="1" max="{{ item.product.stock }}"
-                                   value="{{ item.quantity }}" required>
+                            <input id="quantity-{{ item.id }}" name="quantity" type="number" min="1"
+                                max="{{ item.product.stock }}" value="{{ item.quantity }}" required>
                             <button type="submit">Mettre à jour</button>
                         </form>
                         {% endif %}
-                        <form method="post"
-                              action="{{ url_for('cart.remove', item_id=item.id) }}">
+                        <form method="post" action="{{ url_for('cart.remove', item_id=item.id) }}">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <button class="cart-remove-button" type="submit">
                                 Retirer
@@ -105,12 +102,18 @@
                     <span>Total provisoire</span>
                     <strong>{{ "%.2f"|format(total) }} €</strong>
                 </div>
+                {% if checkout_available %}
+                <a class="btn cart-checkout-button" href="{{ url_for('cart.checkout') }}">
+                    Passer la commande
+                </a>
+                {% else %}
                 <button class="btn cart-checkout-button" type="button" disabled>
-                    Commander prochainement
+                    Stock à vérifier
                 </button>
+                {% endif %}
                 <p class="cart-checkout-note">
-                    Le paiement et la finalisation de la commande seront disponibles
-                    dans une prochaine étape.
+                    Le paiement est simulé : aucune donnée bancaire n’est demandée
+                    ni transmise.
                 </p>
                 <a class="cart-secure-note" href="{{ url_for('shop') }}">
                     Revenir à la boutique <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>

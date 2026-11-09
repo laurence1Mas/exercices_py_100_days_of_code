@@ -1,0 +1,46 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ page_title }} — Administration Atelier{% endblock %}
+
+{% block admin_content %}
+<section class="admin-page">
+    <div class="admin-content admin-form-content">
+        <div class="admin-heading">
+            <div>
+                <p class="eyebrow"><span class="eyebrow-line"></span> CATALOGUE</p>
+                <h1>{{ page_title }}</h1>
+                <p>Renseignez le nom et une description facultative.</p>
+            </div>
+        </div>
+
+        <section class="admin-panel admin-category-form-panel">
+            <form method="post" novalidate>
+                {{ form.hidden_tag() }}
+                <div class="mb-3">
+                    {{ form.name.label(class="form-label") }}
+                    {{ form.name(class="form-control" + (" is-invalid" if form.name.errors else ""),
+                                 maxlength="100", autocomplete="off") }}
+                    {% for error in form.name.errors %}
+                    <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="mb-4">
+                    {{ form.description.label(class="form-label") }}
+                    {{ form.description(class="form-control" + (" is-invalid" if form.description.errors else ""),
+                                        rows="5", maxlength="2000") }}
+                    {% for error in form.description.errors %}
+                    <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                    <div class="form-text">2 000 caractères maximum.</div>
+                </div>
+                <div class="admin-category-form-actions">
+                    {{ form.submit(class="btn btn-terracotta") }}
+                    <a class="btn btn-outline-secondary" href="{{ url_for('admin.categories') }}">
+                        Annuler
+                    </a>
+                </div>
+            </form>
+        </section>
+    </div>
+</section>
+{% endblock %}

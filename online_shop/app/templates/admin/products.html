@@ -1,5 +1,77 @@
 {% extends "admin/base.html" %}
 
+{% macro product_fields(form, prefix) %}
+<div class="mb-3">
+    <label class="form-label" for="{{ prefix }}-name">{{ form.name.label.text }}</label>
+    {{ form.name(class="form-control" + (" is-invalid" if form.name.errors else ""),
+                 id=prefix ~ "-name", maxlength="150", required=true) }}
+    {% for error in form.name.errors %}
+    <div class="invalid-feedback">{{ error }}</div>
+    {% endfor %}
+</div>
+<div class="mb-3">
+    <label class="form-label" for="{{ prefix }}-description">{{ form.description.label.text }}</label>
+    {{ form.description(class="form-control" + (" is-invalid" if form.description.errors else ""),
+                         id=prefix ~ "-description", rows="4", maxlength="5000") }}
+    {% for error in form.description.errors %}
+    <div class="invalid-feedback">{{ error }}</div>
+    {% endfor %}
+</div>
+<div class="row g-3">
+    <div class="col-md-6 mb-3">
+        <label class="form-label" for="{{ prefix }}-price">{{ form.price.label.text }}</label>
+        {{ form.price(class="form-control" + (" is-invalid" if form.price.errors else ""),
+                      id=prefix ~ "-price", min="0.01", max="99999999.99", step="0.01", required=true) }}
+        {% for error in form.price.errors %}
+        <div class="invalid-feedback">{{ error }}</div>
+        {% endfor %}
+    </div>
+    <div class="col-md-6 mb-3">
+        <label class="form-label" for="{{ prefix }}-stock">{{ form.stock.label.text }}</label>
+        {{ form.stock(class="form-control" + (" is-invalid" if form.stock.errors else ""),
+                      id=prefix ~ "-stock", min="0", step="1", required=true) }}
+        {% for error in form.stock.errors %}
+        <div class="invalid-feedback">{{ error }}</div>
+        {% endfor %}
+    </div>
+</div>
+<div class="mb-3">
+    <label class="form-label" for="{{ prefix }}-image">{{ form.image.label.text }}</label>
+    {{ form.image(class="form-control" + (" is-invalid" if form.image.errors else ""),
+                  id=prefix ~ "-image", maxlength="255",
+                  placeholder="https://... ou images/produit.jpg",
+                  **{"data-product-image-url": "true"}) }}
+    {% for error in form.image.errors %}
+    <div class="invalid-feedback">{{ error }}</div>
+    {% endfor %}
+</div>
+<div class="mb-3">
+    <label class="form-label" for="{{ prefix }}-image_file">{{ form.image_file.label.text }}</label>
+    {{ form.image_file(class="form-control" + (" is-invalid" if form.image_file.errors else ""),
+                       id=prefix ~ "-image_file",
+                       accept="image/jpeg,image/png,image/webp") }}
+    <div class="form-text">JPG, PNG ou WEBP, 5 Mo maximum.</div>
+    {% for error in form.image_file.errors %}
+    <div class="invalid-feedback">{{ error }}</div>
+    {% endfor %}
+</div>
+<div class="admin-product-image-preview" id="{{ prefix }}-image-preview">
+    <img alt="Aperçu de l’image du produit" hidden>
+    <span class="admin-product-image-preview-placeholder">
+        <i class="fa-solid fa-image" aria-hidden="true"></i>
+        Aperçu de l’image
+    </span>
+</div>
+<div class="mb-2">
+    <label class="form-label" for="{{ prefix }}-category_id">{{ form.category_id.label.text }}</label>
+    {{ form.category_id(class="form-select" + (" is-invalid" if form.category_id.errors else ""),
+                        id=prefix ~ "-category_id", required=true) }}
+    {% for error in form.category_id.errors %}
+    <div class="invalid-feedback">{{ error }}</div>
+    {% endfor %}
+</div>
+{% endmacro %}
+
 {% block title %}Produits — Administration Atelier{% endblock %}
 
 {% block admin_content %}
@@ -9,13 +81,31 @@
             <div>
                 <p class="eyebrow"><span class="eyebrow-line"></span> CATALOGUE</p>
                 <h1>Produits</h1>
-                <p>Retrouvez les produits actuellement proposés dans la boutique.</p>
+                <p>Gérez les produits, leur catégorie, leur prix et leur stock.</p>
             </div>
-            <a class="admin-store-link" href="{{ url_for('shop') }}">
-                Voir la boutique
-                <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
-            </a>
+            <div class="admin-product-heading-actions">
+                <a class="admin-store-link" href="{{ url_for('shop') }}">
+                    Voir la boutique
+                    <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+                </a>
+                {% if categories %}
+                <button class="btn btn-terracotta" type="button"
+                        data-bs-toggle="modal" data-bs-target="#createProductModal">
+                    <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                    Ajouter un produit
+                </button>
+                {% else %}
+                <a class="btn btn-terracotta" href="{{ url_for('admin.create_category') }}">
+                    <i class="fa-solid fa-tags" aria-hidden="true"></i>
+                    Créer une catégorie
+                </a>
+                {% endif %}
+            </div>
         </div>
+        <p class="admin-category-shortcut">
+            Vous souhaitez organiser le catalogue ?
+            <a href="{{ url_for('admin.categories') }}">Gérer les catégories</a>
+        </p>
 
         <section class="admin-panel">
             <div class="admin-panel-heading">
@@ -27,22 +117,65 @@
             </div>
             {% if products %}
             <div class="table-responsive">
-                <table class="table admin-orders-table align-middle mb-0">
+                <table class="table admin-orders-table admin-products-table align-middle mb-0">
                     <thead>
                         <tr>
                             <th scope="col">Produit</th>
                             <th scope="col">Catégorie</th>
                             <th scope="col">Prix</th>
                             <th scope="col">Stock</th>
+                            <th scope="col" class="text-end">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for product in products %}
                         <tr>
-                            <th scope="row">{{ product.name }}</th>
+                            <th scope="row">
+                                <div class="admin-product-cell">
+                                    {% if product.image %}
+                                    <img class="admin-product-thumbnail" src="{{ product.image }}"
+                                         alt="" loading="lazy">
+                                    {% else %}
+                                    <span class="admin-product-thumbnail admin-product-placeholder"
+                                          aria-hidden="true">
+                                        <i class="fa-solid fa-image"></i>
+                                    </span>
+                                    {% endif %}
+                                    <span>{{ product.name }}</span>
+                                </div>
+                            </th>
                             <td>{{ product.category.name }}</td>
                             <td>{{ "%.2f"|format(product.price) }} €</td>
-                            <td>{{ product.stock }}</td>
+                            <td>
+                                <span class="admin-product-stock
+                                    {{ 'admin-product-stock-empty' if product.stock == 0 }}">
+                                    {{ product.stock }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="admin-product-actions">
+                                    <button class="btn btn-sm btn-outline-secondary" type="button"
+                                            data-bs-toggle="modal" data-bs-target="#editProductModal"
+                                            data-edit-url="{{ url_for('admin.edit_product', product_id=product.id) }}"
+                                            data-name="{{ product.name }}"
+                                            data-description="{{ product.description or '' }}"
+                                            data-price="{{ '%.2f'|format(product.price) }}"
+                                            data-stock="{{ product.stock }}"
+                                            data-image="{{ product.image or '' }}"
+                                            data-category-id="{{ product.category_id }}">
+                                        <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                                        Modifier
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger" type="button"
+                                            data-bs-toggle="modal" data-bs-target="#deleteProductModal"
+                                            data-delete-url="{{ url_for('admin.delete_product',
+                                                                        product_id=product.id) }}"
+                                            data-product-name="{{ product.name }}">
+                                        <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                                        Supprimer
+                                    </button>
+                                </div>
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -50,12 +183,216 @@
             </div>
             {% else %}
             <div class="admin-empty">
-                <i class="empty-mark fa-solid fa-sparkles" aria-hidden="true"></i>
+                <i class="empty-mark fa-solid fa-box-open" aria-hidden="true"></i>
                 <h3>Aucun produit</h3>
-                <p>Les produits du catalogue apparaîtront ici.</p>
+                <p>Ajoutez le premier produit pour commencer à remplir le catalogue.</p>
+                {% if categories %}
+                <button class="btn btn-terracotta" type="button"
+                        data-bs-toggle="modal" data-bs-target="#createProductModal">
+                    <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                    Ajouter un produit
+                </button>
+                {% else %}
+                <a class="btn btn-terracotta" href="{{ url_for('admin.create_category') }}">
+                    <i class="fa-solid fa-tags" aria-hidden="true"></i>
+                    Créer une catégorie d’abord
+                </a>
+                {% endif %}
             </div>
             {% endif %}
         </section>
     </div>
 </section>
+
+{% if categories %}
+<div class="modal fade admin-product-modal" id="createProductModal" tabindex="-1"
+     aria-labelledby="createProductModalLabel" aria-hidden="true"
+     data-open-on-load="{{ 'true' if active_modal == 'create' else 'false' }}">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <form method="post" enctype="multipart/form-data"
+                  action="{{ url_for('admin.create_product') }}">
+                {{ product_form.csrf_token(id="create-product-csrf-token") }}
+                <div class="modal-header">
+                    <div>
+                        <p class="eyebrow"><span class="eyebrow-line"></span> CATALOGUE</p>
+                        <h2 class="modal-title" id="createProductModalLabel">Ajouter un produit</h2>
+                    </div>
+                    <button class="btn-close" type="button" data-bs-dismiss="modal"
+                            aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body">
+                    {{ product_fields(product_form, "create-product") }}
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">
+                        Annuler
+                    </button>
+                    <button class="btn btn-terracotta" type="submit">
+                        <i class="fa-solid fa-check" aria-hidden="true"></i>
+                        Enregistrer le produit
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade admin-product-modal" id="editProductModal" tabindex="-1"
+     aria-labelledby="editProductModalLabel" aria-hidden="true"
+     data-open-on-load="{{ 'true' if active_modal == 'edit' else 'false' }}">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <form id="editProductForm" method="post" enctype="multipart/form-data"
+                  action="{{ url_for('admin.edit_product', product_id=editing_product.id)
+                            if editing_product else url_for('admin.products') }}">
+                {{ product_form.csrf_token(id="edit-product-csrf-token") }}
+                <div class="modal-header">
+                    <div>
+                        <p class="eyebrow"><span class="eyebrow-line"></span> CATALOGUE</p>
+                        <h2 class="modal-title" id="editProductModalLabel">Modifier le produit</h2>
+                    </div>
+                    <button class="btn-close" type="button" data-bs-dismiss="modal"
+                            aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body">
+                    {{ product_fields(product_form, "edit-product") }}
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">
+                        Annuler
+                    </button>
+                    <button class="btn btn-terracotta" type="submit">
+                        <i class="fa-solid fa-check" aria-hidden="true"></i>
+                        Enregistrer les modifications
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="modal fade admin-product-modal admin-delete-modal" id="deleteProductModal"
+     tabindex="-1" aria-labelledby="deleteProductModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form id="deleteProductForm" method="post" action="{{ url_for('admin.products') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="deleteProductModalLabel">Supprimer le produit ?</h2>
+                    <button class="btn-close" type="button" data-bs-dismiss="modal"
+                            aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        Vous êtes sur le point de supprimer
+                        <strong id="deleteProductName"></strong>.
+                        Cette action est définitive.
+                    </p>
+                    <p class="admin-delete-note">
+                        Un produit présent dans un panier ou une commande ne pourra pas être supprimé.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">
+                        Annuler
+                    </button>
+                    <button class="btn btn-danger" type="submit">
+                        <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                        Supprimer le produit
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block admin_scripts %}
+<script>
+    function updateProductImagePreview(prefix, source) {
+        const preview = document.getElementById(`${prefix}-image-preview`);
+        const image = preview.querySelector("img");
+        const placeholder = preview.querySelector(".admin-product-image-preview-placeholder");
+        const previousObjectUrl = preview.dataset.objectUrl;
+
+        if (previousObjectUrl) {
+            URL.revokeObjectURL(previousObjectUrl);
+            delete preview.dataset.objectUrl;
+        }
+
+        if (!source) {
+            image.hidden = true;
+            image.removeAttribute("src");
+            placeholder.hidden = false;
+            return;
+        }
+
+        image.onerror = () => {
+            image.hidden = true;
+            placeholder.hidden = false;
+        };
+        image.onload = () => {
+            image.hidden = false;
+            placeholder.hidden = true;
+        };
+        image.src = source;
+    }
+
+    document.querySelectorAll("[data-product-image-url]").forEach((input) => {
+        const prefix = input.id.replace(/-image$/, "");
+        const fileInput = document.getElementById(`${prefix}-image_file`);
+        input.addEventListener("input", () => {
+            fileInput.value = "";
+            updateProductImagePreview(prefix, input.value.trim());
+        });
+        fileInput.addEventListener("change", () => {
+            const file = fileInput.files[0];
+            const preview = document.getElementById(`${prefix}-image-preview`);
+            if (!file) {
+                updateProductImagePreview(prefix, input.value.trim());
+                return;
+            }
+            const objectUrl = URL.createObjectURL(file);
+            updateProductImagePreview(prefix, objectUrl);
+            preview.dataset.objectUrl = objectUrl;
+        });
+        updateProductImagePreview(prefix, input.value.trim());
+    });
+
+    const editProductModal = document.getElementById("editProductModal");
+    if (editProductModal) {
+        editProductModal.addEventListener("show.bs.modal", (event) => {
+            const button = event.relatedTarget;
+            if (!button) return;
+
+            const form = document.getElementById("editProductForm");
+            form.action = button.dataset.editUrl;
+            form.querySelector("#edit-product-name").value = button.dataset.name;
+            form.querySelector("#edit-product-description").value = button.dataset.description;
+            form.querySelector("#edit-product-price").value = button.dataset.price;
+            form.querySelector("#edit-product-stock").value = button.dataset.stock;
+            form.querySelector("#edit-product-image").value = button.dataset.image;
+            form.querySelector("#edit-product-category_id").value = button.dataset.categoryId;
+            form.querySelector("#edit-product-image_file").value = "";
+            updateProductImagePreview("edit-product", button.dataset.image);
+        });
+    }
+
+    const deleteProductModal = document.getElementById("deleteProductModal");
+    deleteProductModal.addEventListener("show.bs.modal", (event) => {
+        const button = event.relatedTarget;
+        if (!button) return;
+
+        document.getElementById("deleteProductForm").action = button.dataset.deleteUrl;
+        document.getElementById("deleteProductName").textContent = button.dataset.productName;
+    });
+    const activeProductModal = document.querySelector(
+        '.admin-product-modal[data-open-on-load="true"]'
+    );
+    if (activeProductModal) {
+        bootstrap.Modal.getOrCreateInstance(activeProductModal).show();
+    }
+</script>
 {% endblock %}

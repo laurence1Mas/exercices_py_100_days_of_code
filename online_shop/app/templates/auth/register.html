@@ -1,27 +1,66 @@
 {% extends "base.html" %}
 
-{% block title %}Créer un compte - Boutique en ligne{% endblock %}
+{% block title %}Créer un compte — Atelier{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-7 col-lg-5">
-        <h1 class="h2 mb-4">Créer un compte</h1>
-        <form method="post">
-            {{ form.hidden_tag() }}
-            {% for field in [form.name, form.email, form.password, form.confirm_password] %}
-                <div class="mb-3">
-                    {{ field.label(class="form-label") }}
-                    {{ field(class="form-control" + (" is-invalid" if field.errors else "")) }}
-                    {% for error in field.errors %}
-                        <div class="invalid-feedback">{{ error }}</div>
-                    {% endfor %}
+<section class="auth-page">
+    <div class="container">
+        <div class="auth-layout">
+            <div class="auth-welcome">
+                <a class="auth-brand" href="{{ url_for('home') }}">
+                    <span class="brand-mark" aria-hidden="true">A</span>
+                    <span>atelier<span class="brand-period">.</span></span>
+                </a>
+                <p class="eyebrow"><span class="eyebrow-line"></span> BIENVENUE CHEZ ATELIER</p>
+                <h1>Votre histoire<br>commence <em>ici.</em></h1>
+                <p>
+                    Créez votre espace personnel pour retrouver votre panier,
+                    suivre vos commandes et garder vos pièces préférées à portée de main.
+                </p>
+                <div class="auth-welcome-note">
+                    <i class="fa-solid fa-sparkles" aria-hidden="true"></i>
+                    <span>Une boutique en ligne qui se construit avec soin.</span>
                 </div>
-            {% endfor %}
-            {{ form.submit(class="btn btn-primary") }}
-        </form>
-        <p class="mt-3">Vous avez déjà un compte ?
-            <a href="{{ url_for('auth.login') }}">Connectez-vous</a>.
-        </p>
+            </div>
+            <div class="auth-card">
+                <p class="auth-card-kicker">REJOIGNEZ NOTRE UNIVERS</p>
+                <h2>Créer un compte</h2>
+                <p class="auth-card-intro">Quelques informations suffisent pour commencer.</p>
+                <form method="post" class="auth-form">
+                    {{ form.hidden_tag() }}
+                    {% for field in [form.name, form.email, form.password, form.confirm_password] %}
+                    <div class="mb-3">
+                        {{ field.label(class="form-label") }}
+                        {{ field(class="form-control auth-input" + (" is-invalid" if field.errors else ""),
+                                 placeholder={
+                                     "name": "Votre nom",
+                                     "email": "Votre adresse e-mail",
+                                     "password": "8 caractères minimum",
+                                     "confirm_password": "Saisissez à nouveau votre mot de passe"
+                                 }[field.name],
+                                 autocomplete={
+                                     "name": "name",
+                                     "email": "email",
+                                     "password": "new-password",
+                                     "confirm_password": "new-password"
+                                 }[field.name]) }}
+                        {% for error in field.errors %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+                    {{ form.submit(class="btn auth-submit") }}
+                </form>
+                <p class="auth-signup">
+                    Vous avez déjà un compte ?
+                    <a href="{{ url_for('auth.login') }}">Connectez-vous</a>
+                </p>
+                <a class="auth-return" href="{{ url_for('home') }}">
+                    <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+                    Retour à la boutique
+                </a>
+            </div>
+        </div>
     </div>
-</div>
+</section>
 {% endblock %}

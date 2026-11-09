@@ -43,10 +43,10 @@
                     </div>
                     <div class="order-card-status">
                         <span class="order-status-badge order-status-{{ order.status|lower }}">
-                            {{ order.status|replace("_", " ")|capitalize }}
+                            {{ order_status_labels.get(order.status, order.status|replace("_", " ")|capitalize) }}
                         </span>
                         <span class="payment-status">
-                            Paiement : {{ order.payment_status|replace("_", " ")|lower }}
+                            {{ payment_status_labels.get(order.payment_status, order.payment_status|replace("_", " ")|capitalize) }}
                         </span>
                     </div>
                     <a class="order-detail-link"
@@ -62,8 +62,7 @@
             <i class="empty-mark fa-solid fa-sparkles" aria-hidden="true"></i>
             <h2>Pas encore de commande</h2>
             <p>
-                Vos prochaines commandes apparaîtront ici. La boutique prépare
-                encore son parcours d’achat.
+                Vos prochaines commandes apparaîtront ici après votre premier achat.
             </p>
             <a class="btn btn-terracotta" href="{{ url_for('shop') }}">
                 Découvrir la boutique

@@ -15,8 +15,16 @@ Flask-SQLAlchemy, Flask-Login, Flask-WTF et Bootstrap.
 - Historique des commandes et détail privé des commandes du client connecté.
 - Espace administrateur réservé au rôle `ADMIN`, avec des pages distinctes pour
   l'aperçu, les produits, les commandes, le stock et les statistiques.
+- Gestion CRUD des catégories dans l'espace administrateur. Une catégorie
+  contenant des produits ne peut pas être supprimée.
+- Gestion CRUD des produits depuis la page `/admin/products`, avec formulaires
+  dans des modales Bootstrap. Un produit référencé par un panier ou une commande
+  ne peut pas être supprimé. Les administrateurs peuvent importer des images
+  JPG, PNG ou WEBP jusqu'à 5 Mo ; elles sont vérifiées puis enregistrées dans
+  `app/static/uploads/products` sous un nom généré par l'application.
 - Formulaire de contact avec validation et enregistrement des messages en base ;
-  les administrateurs les consultent depuis `/admin/messages`.
+  les administrateurs les lisent et les suppriment depuis `/admin/messages`,
+  avec un accès direct pour répondre par e-mail.
 - Inscription avec validation des champs et vérification de l'unicité de
   l'adresse e-mail (sans tenir compte de la casse).
 - Hachage des mots de passe avec Werkzeug.
@@ -25,10 +33,9 @@ Flask-SQLAlchemy, Flask-Login, Flask-WTF et Bootstrap.
 - Icônes de l'interface fournies par Font Awesome 6 via CDN dans les layouts
   client et administrateur.
 
-Le checkout et le paiement ne sont pas encore implémentés ; le bouton de
-finalisation du panier reste donc désactivé. Les commandes visibles dans
-l'historique doivent être créées en base par une étape ultérieure ou par du code
-de test.
+Le checkout comprend une étape de récapitulatif et une confirmation de paiement
+simulé. Aucune donnée bancaire n'est collectée ; les commandes payées sont
+enregistrées et le stock est mis à jour en base.
 
 ### Créer le compte administrateur initial
 
@@ -176,11 +183,29 @@ préserver les relations et les règles de validation.
 2. Toutes les routes `/admin/` exigent une connexion et le rôle exact `ADMIN` ;
    un client connecté reçoit une réponse 403.
 3. La barre latérale mène aux pages `/admin/` (aperçu), `/admin/products`,
-   `/admin/orders`, `/admin/stock` et `/admin/statistics`. La page active est
-   indiquée dans la navigation.
+   `/admin/categories`, `/admin/orders`, `/admin/stock` et `/admin/statistics`.
+   La page active est indiquée dans la navigation.
 4. L'aperçu affiche les indicateurs principaux et les cinq dernières commandes.
    Les pages Produits, Commandes et Stock présentent leurs listes respectives ;
    la page Statistiques détaille les indicateurs de ventes et d'activité.
+5. La page `/admin/categories` permet de créer, lister, modifier et supprimer
+   les catégories. Les noms sont uniques sans tenir compte de la casse ; la
+   suppression est bloquée tant que la catégorie contient des produits.
+6. La page `/admin/products` permet d'ajouter et de modifier les produits dans
+   des modales Bootstrap, et de confirmer leur suppression dans une modale.
+   Les formulaires valident le nom, le prix, le stock et la catégorie côté
+   serveur. Un produit utilisé dans un panier ou une commande ne peut pas être
+   supprimé.
+7. La boîte de réception `/admin/messages` liste les 100 derniers messages.
+   Chaque message possède une fiche détaillée ; l'administrateur peut ouvrir
+   son client e-mail pour répondre ou supprimer le message avec confirmation.
+
+### Espace client
+
+1. `/auth/profile` présente les coordonnées du compte, le nombre d'articles
+   dans le panier, le nombre de commandes et les trois dernières commandes.
+2. Des liens rapides ouvrent le panier, l'historique des commandes et, pour un
+   compte `ADMIN`, le tableau de bord d'administration.
 
 ### Formulaire de contact
 
@@ -202,8 +227,7 @@ préserver les relations et les règles de validation.
    client connecté. Une commande inexistante ou appartenant à un autre client
    renvoie une réponse 404.
 4. Le détail reprend les quantités et prix unitaires enregistrés dans les
-   lignes de commande. Les commandes apparaîtront automatiquement lorsque le
-   checkout sera implémenté.
+   lignes de commande ainsi que l'état du paiement simulé.
 
 ### Panier
 
@@ -213,7 +237,25 @@ préserver les relations et les règles de validation.
 3. Le client peut modifier la quantité ou retirer un article. Chaque action
    vérifie que la ligne lui appartient et que le stock permet cette quantité.
 4. Le sous-total et le total provisoire sont recalculés à partir des prix
-   actuels du catalogue. Le checkout reste désactivé jusqu'à son implémentation.
+   actuels du catalogue. Le bouton de commande est désactivé si une quantité
+   dépasse le stock disponible.
+
+### Checkout et paiement simulé
+
+1. `/cart/checkout` affiche le récapitulatif et recalcule le total côté serveur ;
+   les prix et les quantités envoyés par le navigateur ne sont pas utilisés.
+2. À la confirmation, le serveur revérifie le stock et le décrémente dans la
+   même transaction SQLite que la création de la commande et de ses lignes.
+   Si un article n'est plus disponible, aucune commande n'est créée et le
+   panier est conservé.
+3. Le paiement est volontairement simulé : aucun numéro de carte ni donnée
+   bancaire n'est demandé ou enregistré. La confirmation crée une commande
+   `PROCESSING` avec un paiement `PAID`, vide le panier et affiche le détail.
+4. Depuis `/admin/orders`, un administrateur ouvre le détail d'une commande et
+   peut la faire passer de « En préparation » à « Expédiée », puis « Livrée ».
+   Une commande encore en préparation peut être annulée ; cette action simule
+   le remboursement et remet les quantités en stock. Les transitions sont
+   vérifiées côté serveur.
 
 ## Structure du projet
 
@@ -237,9 +279,8 @@ online_shop/
 
 ## Prochaines étapes
 
-1. Ajouter la gestion administrateur des produits et catégories.
-2. Implémenter le checkout, la simulation de paiement et la création de commandes.
-3. Compléter le suivi administrateur des commandes et les tests.
+1. Compléter les tests automatisés des parcours client et administrateur.
+2. Préparer le déploiement avec une configuration et un serveur WSGI adaptés.
 
 Le serveur lancé par `python run.py` est un serveur de développement. Utilisez
 un serveur WSGI adapté pour un déploiement en production.

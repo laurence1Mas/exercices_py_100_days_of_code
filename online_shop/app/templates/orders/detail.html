@@ -20,7 +20,7 @@
                 <p>Passée le {{ order.created_at.strftime("%d/%m/%Y à %H:%M") }}</p>
             </div>
             <span class="order-status-badge order-status-{{ order.status|lower }}">
-                {{ order.status|replace("_", " ")|capitalize }}
+                {{ order_status_labels.get(order.status, order.status|replace("_", " ")|capitalize) }}
             </span>
         </div>
 
@@ -53,12 +53,16 @@
                 <h2>Résumé</h2>
                 <div class="order-summary-row">
                     <span>Statut du paiement</span>
-                    <strong>{{ order.payment_status|replace("_", " ")|capitalize }}</strong>
+                    <strong>{{ payment_status_labels.get(order.payment_status, order.payment_status|replace("_", " ")|capitalize) }}</strong>
                 </div>
                 <div class="order-summary-total">
                     <span>Total de la commande</span>
                     <strong>{{ "%.2f"|format(order.total_amount) }} €</strong>
                 </div>
+                <p class="checkout-simulation-note">
+                    <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                    Paiement simulé : aucune donnée bancaire n’a été utilisée.
+                </p>
                 <a class="order-detail-link" href="{{ url_for('orders.index') }}">
                         <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
                         Retour à mes commandes

@@ -5,10 +5,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}Boutique en ligne{% endblock %}</title>
+    <link rel="icon" href="{{ url_for('static', filename='images/Logo.png') }}">
     <meta name="description" content="Découvrez notre boutique en ligne et créez votre espace client.">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -21,8 +21,7 @@
     <nav class="navbar navbar-expand-xxl shop-navbar">
         <div class="container">
             <a class="navbar-brand shop-brand" href="{{ url_for('home') }}" aria-label="Atelier, accueil">
-                <span class="brand-mark" aria-hidden="true">A</span>
-                <span>atelier<span class="brand-period">.</span></span>
+                <img src="{{ url_for('static', filename='images/Logo.png') }}" alt="Atelier" class="admin-brand-logo">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#shopNavigation"
                 aria-controls="shopNavigation" aria-expanded="false" aria-label="Ouvrir le menu">
@@ -39,14 +38,11 @@
                 <div class="navbar-nav align-items-lg-center shop-nav-actions">
                     {% if current_user.is_authenticated %}
                     <div class="nav-item dropdown customer-menu">
-                        <button type="button"
-                                class="nav-link dropdown-toggle profile-link customer-menu-toggle"
-                                id="customerMenu" data-bs-toggle="dropdown"
-                                aria-expanded="false">
+                        <button type="button" class="nav-link dropdown-toggle profile-link customer-menu-toggle"
+                            id="customerMenu" data-bs-toggle="dropdown" aria-expanded="false">
                             Mon compte
                         </button>
-                        <ul class="dropdown-menu dropdown-menu-end"
-                            aria-labelledby="customerMenu">
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="customerMenu">
                             <li>
                                 <a class="dropdown-item" href="{{ url_for('auth.profile') }}">
                                     Mon espace
@@ -63,7 +59,9 @@
                                 </a>
                             </li>
                             {% if current_user.role == "ADMIN" %}
-                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
                             <li>
                                 <a class="dropdown-item" href="{{ url_for('admin.dashboard') }}">
                                     Administration

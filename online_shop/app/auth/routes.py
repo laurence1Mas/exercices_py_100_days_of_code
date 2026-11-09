@@ -4,8 +4,8 @@ from sqlalchemy import func
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from app.extensions import db
-from app.models import User
 from app.auth.forms import LoginForm, RegisterForm
+from app.models import CartItem, Order, User
 
 
 auth = Blueprint("auth", __name__, url_prefix="/auth")
@@ -76,4 +76,23 @@ def logout():
 @auth.route("/profile")
 @login_required
 def profile():
-    return render_template("auth/profile.html")
+    order_count = db.session.scalar(
+        db.select(func.count(Order.id)).where(Order.user_id == current_user.id)
+    ) or 0
+    cart_item_count = db.session.scalar(
+        db.select(func.coalesce(func.sum(CartItem.quantity), 0)).where(
+            CartItem.user_id == current_user.id
+        )
+    ) or 0
+    recent_orders = db.session.scalars(
+        db.select(Order)
+        .where(Order.user_id == current_user.id)
+        .order_by(Order.created_at.desc(), Order.id.desc())
+        .limit(3)
+    ).all()
+    return render_template(
+        "auth/profile.html",
+        order_count=order_count,
+        cart_item_count=cart_item_count,
+        recent_orders=recent_orders,
+    )
