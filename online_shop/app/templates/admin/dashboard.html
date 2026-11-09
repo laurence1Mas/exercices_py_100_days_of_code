@@ -12,7 +12,8 @@
                 <p>Voici un aperçu de l’activité de votre boutique.</p>
             </div>
             <a class="admin-store-link" href="{{ url_for('shop') }}">
-                Voir la boutique <span aria-hidden="true">↗</span>
+                Voir la boutique
+                <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
             </a>
         </div>
 
@@ -100,7 +101,7 @@
                 </div>
                 {% else %}
                 <div class="admin-empty">
-                    <span class="empty-mark" aria-hidden="true">✳</span>
+                    <i class="empty-mark fa-solid fa-sparkles" aria-hidden="true"></i>
                     <h3>Aucune commande pour le moment</h3>
                     <p>Les nouvelles commandes apparaîtront ici.</p>
                 </div>
@@ -111,10 +112,10 @@
                 <p class="eyebrow"><span class="eyebrow-line"></span> GESTION</p>
                 <h2>Accédez rapidement à vos espaces.</h2>
                 <div class="admin-quick-links">
-                    <a href="{{ url_for('admin.products') }}">Voir les produits <span aria-hidden="true">→</span></a>
-                    <a href="{{ url_for('admin.orders') }}">Consulter les commandes <span aria-hidden="true">→</span></a>
-                    <a href="{{ url_for('admin.stock') }}">Suivre le stock <span aria-hidden="true">→</span></a>
-                    <a href="{{ url_for('admin.statistics') }}">Voir les statistiques <span aria-hidden="true">→</span></a>
+                    <a href="{{ url_for('admin.products') }}">Voir les produits <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+                    <a href="{{ url_for('admin.orders') }}">Consulter les commandes <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+                    <a href="{{ url_for('admin.stock') }}">Suivre le stock <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+                    <a href="{{ url_for('admin.statistics') }}">Voir les statistiques <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
                 </div>
             </aside>
         </div>

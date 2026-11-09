@@ -22,6 +22,8 @@ Flask-SQLAlchemy, Flask-Login, Flask-WTF et Bootstrap.
 - Hachage des mots de passe avec Werkzeug.
 - Connexion, déconnexion protégée par CSRF et page de profil protégée.
 - Rôle `CUSTOMER` attribué par défaut aux nouveaux comptes.
+- Icônes de l'interface fournies par Font Awesome 6 via CDN dans les layouts
+  client et administrateur.
 
 Le checkout et le paiement ne sont pas encore implémentés ; le bouton de
 finalisation du panier reste donc désactivé. Les commandes visibles dans

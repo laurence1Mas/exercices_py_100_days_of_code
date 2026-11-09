@@ -6,6 +6,8 @@
     <title>{% block title %}Administration — Atelier{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
           rel="stylesheet">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
@@ -22,7 +24,8 @@
         <div class="admin-topbar-actions">
             <span class="admin-topbar-greeting">{{ current_user.name }}</span>
             <a class="admin-store-link" href="{{ url_for('home') }}">
-                Voir la boutique <span aria-hidden="true">↗</span>
+                Voir la boutique
+                <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
             </a>
             <form method="post" action="{{ url_for('auth.logout') }}">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
@@ -37,27 +40,27 @@
             <nav class="admin-sidebar-nav">
                 <a class="admin-sidebar-link{% if request.endpoint == 'admin.dashboard' %} admin-sidebar-active{% endif %}"
                    href="{{ url_for('admin.dashboard') }}">
-                    <span aria-hidden="true">◫</span> Vue d’ensemble
+                    <span aria-hidden="true"><i class="fa-solid fa-gauge-high"></i></span> Vue d’ensemble
                 </a>
                 <a class="admin-sidebar-link{% if request.endpoint == 'admin.products' %} admin-sidebar-active{% endif %}"
                    href="{{ url_for('admin.products') }}">
-                    <span aria-hidden="true">□</span> Produits
+                    <span aria-hidden="true"><i class="fa-solid fa-box-open"></i></span> Produits
                 </a>
                 <a class="admin-sidebar-link{% if request.endpoint == 'admin.orders' %} admin-sidebar-active{% endif %}"
                    href="{{ url_for('admin.orders') }}">
-                    <span aria-hidden="true">▤</span> Commandes
+                    <span aria-hidden="true"><i class="fa-solid fa-clipboard-list"></i></span> Commandes
                 </a>
                 <a class="admin-sidebar-link{% if request.endpoint == 'admin.messages' %} admin-sidebar-active{% endif %}"
                    href="{{ url_for('admin.messages') }}">
-                    <span aria-hidden="true">✉</span> Messages
+                    <span aria-hidden="true"><i class="fa-solid fa-envelope"></i></span> Messages
                 </a>
                 <a class="admin-sidebar-link{% if request.endpoint == 'admin.stock' %} admin-sidebar-active{% endif %}"
                    href="{{ url_for('admin.stock') }}">
-                    <span aria-hidden="true">▦</span> Stock
+                    <span aria-hidden="true"><i class="fa-solid fa-boxes-stacked"></i></span> Stock
                 </a>
                 <a class="admin-sidebar-link{% if request.endpoint == 'admin.statistics' %} admin-sidebar-active{% endif %}"
                    href="{{ url_for('admin.statistics') }}">
-                    <span aria-hidden="true">⌁</span> Statistiques
+                    <span aria-hidden="true"><i class="fa-solid fa-chart-line"></i></span> Statistiques
                 </a>
             </nav>
             <div class="admin-sidebar-bottom">
