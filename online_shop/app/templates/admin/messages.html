@@ -1,0 +1,47 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Messages — Administration Atelier{% endblock %}
+
+{% block admin_content %}
+<section class="admin-page">
+    <div class="admin-content">
+        <div class="admin-heading">
+            <div>
+                <p class="eyebrow"><span class="eyebrow-line"></span> BOÎTE DE RÉCEPTION</p>
+                <h1>Messages de contact</h1>
+                <p>Les 100 messages les plus récents envoyés depuis le formulaire.</p>
+            </div>
+        </div>
+
+        {% if messages %}
+        <div class="admin-messages-list">
+            {% for message in messages %}
+            <article class="admin-panel admin-message-card">
+                <div class="admin-message-header">
+                    <div>
+                        <h2>{{ message.subject }}</h2>
+                        <p>
+                            <strong>{{ message.name }}</strong>
+                            · <a href="mailto:{{ message.email }}">{{ message.email }}</a>
+                        </p>
+                    </div>
+                    <time datetime="{{ message.created_at.isoformat() }}">
+                        {{ message.created_at.strftime("%d/%m/%Y à %H:%M") }}
+                    </time>
+                </div>
+                <p class="admin-message-body">{{ message.message }}</p>
+            </article>
+            {% endfor %}
+        </div>
+        {% else %}
+        <section class="admin-panel">
+            <div class="admin-empty">
+                <span class="empty-mark" aria-hidden="true">✳</span>
+                <h3>Aucun message reçu</h3>
+                <p>Les messages envoyés via le formulaire de contact apparaîtront ici.</p>
+            </div>
+        </section>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

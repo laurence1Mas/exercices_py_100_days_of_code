@@ -47,6 +47,10 @@
                    href="{{ url_for('admin.orders') }}">
                     <span aria-hidden="true">▤</span> Commandes
                 </a>
+                <a class="admin-sidebar-link{% if request.endpoint == 'admin.messages' %} admin-sidebar-active{% endif %}"
+                   href="{{ url_for('admin.messages') }}">
+                    <span aria-hidden="true">✉</span> Messages
+                </a>
                 <a class="admin-sidebar-link{% if request.endpoint == 'admin.stock' %} admin-sidebar-active{% endif %}"
                    href="{{ url_for('admin.stock') }}">
                     <span aria-hidden="true">▦</span> Stock

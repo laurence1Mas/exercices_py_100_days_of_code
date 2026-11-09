@@ -15,6 +15,8 @@ Flask-SQLAlchemy, Flask-Login, Flask-WTF et Bootstrap.
 - Historique des commandes et détail privé des commandes du client connecté.
 - Espace administrateur réservé au rôle `ADMIN`, avec des pages distinctes pour
   l'aperçu, les produits, les commandes, le stock et les statistiques.
+- Formulaire de contact avec validation et enregistrement des messages en base ;
+  les administrateurs les consultent depuis `/admin/messages`.
 - Inscription avec validation des champs et vérification de l'unicité de
   l'adresse e-mail (sans tenir compte de la casse).
 - Hachage des mots de passe avec Werkzeug.
@@ -105,6 +107,16 @@ définissez une clé privée dans l'environnement avant tout déploiement.
 4. L'aperçu affiche les indicateurs principaux et les cinq dernières commandes.
    Les pages Produits, Commandes et Stock présentent leurs listes respectives ;
    la page Statistiques détaille les indicateurs de ventes et d'activité.
+
+### Formulaire de contact
+
+1. `/contact` affiche un formulaire avec le nom, l'adresse e-mail, le sujet et
+   le message. Les visiteurs connectés voient leur nom et leur e-mail préremplis.
+2. Flask-WTF protège la soumission par CSRF et valide les champs côté serveur.
+   Un message valide est enregistré dans la table `contact_messages`, puis
+   l'utilisateur est redirigé vers le formulaire avec une confirmation.
+3. La page `/admin/messages`, réservée au rôle `ADMIN`, présente les 100 messages
+   les plus récents. Aucun e-mail n'est envoyé automatiquement.
 
 ### Historique et détail des commandes
 

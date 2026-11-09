@@ -3,7 +3,7 @@ from flask_login import current_user, login_required
 from sqlalchemy import func
 
 from app.extensions import db
-from app.models import Order, Product, User
+from app.models import ContactMessage, Order, Product, User
 
 
 admin = Blueprint("admin", __name__, url_prefix="/admin")
@@ -58,6 +58,18 @@ def orders():
         )
     ).all()
     return render_template("admin/orders.html", orders=orders)
+
+
+@admin.get("/messages")
+@login_required
+def messages():
+    messages = db.session.scalars(
+        db.select(ContactMessage).order_by(
+            ContactMessage.created_at.desc(),
+            ContactMessage.id.desc(),
+        ).limit(100)
+    ).all()
+    return render_template("admin/messages.html", messages=messages)
 
 
 @admin.get("/stock")

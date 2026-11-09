@@ -2232,6 +2232,145 @@ body {
     margin: 0 0 8px;
 }
 
+.contact-page {
+    display: grid;
+    min-height: 65vh;
+    place-items: center;
+    padding: 64px 0;
+    background:
+        radial-gradient(ellipse at 85% 10%, rgba(233, 220, 202, 0.38), transparent 30%),
+        var(--paper);
+}
+
+.contact-card {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: clamp(30px, 7vw, 72px);
+    border: 1px solid rgba(41, 43, 40, 0.08);
+    background: rgba(255, 255, 255, 0.82);
+}
+
+.contact-card h1 {
+    margin: 12px 0;
+    font-family: var(--serif);
+    font-size: clamp(2.5rem, 7vw, 4.2rem);
+    font-weight: 500;
+    letter-spacing: -0.05em;
+}
+
+.contact-intro {
+    max-width: 520px;
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.8;
+}
+
+.contact-form {
+    margin-top: 30px;
+}
+
+.contact-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.contact-field-full {
+    grid-column: 1 / -1;
+}
+
+.contact-field .form-label {
+    color: var(--ink);
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+
+.contact-field .form-control {
+    border-color: #e6e1d9;
+    border-radius: 2px;
+    padding: 11px 12px;
+    background: #fff;
+    font-size: 0.84rem;
+}
+
+.contact-field .form-control:focus {
+    border-color: var(--terracotta);
+    box-shadow: 0 0 0 0.2rem rgba(182, 95, 70, 0.12);
+}
+
+.contact-field-error {
+    display: block;
+    margin-top: 5px;
+    color: #a63f35;
+    font-size: 0.72rem;
+}
+
+.contact-submit {
+    margin-top: 20px;
+}
+
+.admin-messages-list {
+    display: grid;
+    gap: 14px;
+}
+
+.admin-message-card {
+    padding: 20px 23px;
+}
+
+.admin-message-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.admin-message-header h2 {
+    margin: 0;
+    color: #303641;
+    font-size: 0.96rem;
+    font-weight: 700;
+}
+
+.admin-message-header p,
+.admin-message-header time {
+    margin: 6px 0 0;
+    color: #7a818c;
+    font-size: 0.72rem;
+}
+
+.admin-message-header a {
+    color: #9b5b43;
+}
+
+.admin-message-body {
+    margin: 18px 0 0;
+    color: #505864;
+    font-size: 0.82rem;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+}
+
+@media (max-width: 575.98px) {
+    .contact-page {
+        min-height: 55vh;
+        padding: 36px 0;
+    }
+
+    .contact-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .contact-field-full {
+        grid-column: auto;
+    }
+
+    .admin-message-header {
+        flex-direction: column;
+        gap: 2px;
+    }
+}
+
 @media (prefers-reduced-motion: reduce) {
     html {
         scroll-behavior: auto;
