@@ -1,25 +1,25 @@
 <!doctype html>
 <html lang="fr">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}Administration — Atelier{% endblock %}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-          rel="stylesheet">
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="icon" href="{{ url_for('static', filename='images/Logo.png') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
-          rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
+
 <body class="admin-shell">
     <header class="admin-topbar">
         <a class="admin-brand" href="{{ url_for('admin.dashboard') }}">
-            <span class="brand-mark" aria-hidden="true">A</span>
-            <span>atelier<span>.</span></span>
-            <span class="admin-brand-label">STUDIO</span>
+            <img src="{{ url_for('static', filename='images/Logo.png') }}" alt="Atelier" class="admin-brand-logo">
         </a>
         <div class="admin-topbar-actions">
             <span class="admin-topbar-greeting">{{ current_user.name }}</span>
@@ -39,27 +39,27 @@
             <p class="admin-sidebar-label">ESPACE ADMIN</p>
             <nav class="admin-sidebar-nav">
                 <a class="admin-sidebar-link{% if request.endpoint == 'admin.dashboard' %} admin-sidebar-active{% endif %}"
-                   href="{{ url_for('admin.dashboard') }}">
+                    href="{{ url_for('admin.dashboard') }}">
                     <span aria-hidden="true"><i class="fa-solid fa-gauge-high"></i></span> Vue d’ensemble
                 </a>
                 <a class="admin-sidebar-link{% if request.endpoint == 'admin.products' %} admin-sidebar-active{% endif %}"
-                   href="{{ url_for('admin.products') }}">
+                    href="{{ url_for('admin.products') }}">
                     <span aria-hidden="true"><i class="fa-solid fa-box-open"></i></span> Produits
                 </a>
                 <a class="admin-sidebar-link{% if request.endpoint == 'admin.orders' %} admin-sidebar-active{% endif %}"
-                   href="{{ url_for('admin.orders') }}">
+                    href="{{ url_for('admin.orders') }}">
                     <span aria-hidden="true"><i class="fa-solid fa-clipboard-list"></i></span> Commandes
                 </a>
                 <a class="admin-sidebar-link{% if request.endpoint == 'admin.messages' %} admin-sidebar-active{% endif %}"
-                   href="{{ url_for('admin.messages') }}">
+                    href="{{ url_for('admin.messages') }}">
                     <span aria-hidden="true"><i class="fa-solid fa-envelope"></i></span> Messages
                 </a>
                 <a class="admin-sidebar-link{% if request.endpoint == 'admin.stock' %} admin-sidebar-active{% endif %}"
-                   href="{{ url_for('admin.stock') }}">
+                    href="{{ url_for('admin.stock') }}">
                     <span aria-hidden="true"><i class="fa-solid fa-boxes-stacked"></i></span> Stock
                 </a>
                 <a class="admin-sidebar-link{% if request.endpoint == 'admin.statistics' %} admin-sidebar-active{% endif %}"
-                   href="{{ url_for('admin.statistics') }}">
+                    href="{{ url_for('admin.statistics') }}">
                     <span aria-hidden="true"><i class="fa-solid fa-chart-line"></i></span> Statistiques
                 </a>
             </nav>
@@ -77,8 +77,8 @@
             {% if messages %}
             <div class="admin-flashes">
                 {% for category, message in messages %}
-                <div class="alert alert-{{ 'danger' if category == 'error' else category }}"
-                     role="alert">{{ message }}</div>
+                <div class="alert alert-{{ 'danger' if category == 'error' else category }}" role="alert">{{ message }}
+                </div>
                 {% endfor %}
             </div>
             {% endif %}
@@ -92,4 +92,5 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
