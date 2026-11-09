@@ -43,6 +43,10 @@
                        href="{{ url_for('orders.index') }}">Mes commandes</a>
                     <a class="nav-link profile-link"
                        href="{{ url_for('cart.index') }}">Mon panier</a>
+                    {% if current_user.role == "ADMIN" %}
+                    <a class="nav-link profile-link"
+                       href="{{ url_for('admin.dashboard') }}">Administration</a>
+                    {% endif %}
                     <form method="post" action="{{ url_for('auth.logout') }}" class="ms-lg-2">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <button class="btn btn-dark shop-account-btn" type="submit">

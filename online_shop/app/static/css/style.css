@@ -1268,6 +1268,224 @@ body {
         var(--paper);
 }
 
+.admin-page {
+    min-height: 65vh;
+    padding: 58px 0 90px;
+    background:
+        radial-gradient(ellipse at 92% 5%, rgba(233, 220, 202, 0.3), transparent 25%),
+        var(--paper);
+}
+
+.admin-heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 30px;
+}
+
+.admin-heading .eyebrow {
+    margin-bottom: 13px;
+}
+
+.admin-heading h1 {
+    margin: 0;
+    font-family: var(--serif);
+    font-size: clamp(2.4rem, 5vw, 3.6rem);
+    font-weight: 500;
+    letter-spacing: -0.045em;
+}
+
+.admin-heading > div > p:last-child {
+    margin: 10px 0 0;
+    color: var(--muted);
+    font-size: 0.88rem;
+}
+
+.admin-store-link {
+    display: inline-flex;
+    flex: 0 0 auto;
+    gap: 10px;
+    color: var(--terracotta-dark);
+    font-size: 0.8rem;
+    text-decoration: none;
+}
+
+.admin-store-link:hover {
+    color: var(--ink);
+}
+
+.admin-stat-card {
+    display: flex;
+    min-height: 145px;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+    border: 1px solid #eeece7;
+    background: #fff;
+}
+
+.admin-stat-label {
+    color: #89847a;
+    font-size: 0.59rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+}
+
+.admin-stat-card > strong {
+    margin-top: 15px;
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 2rem;
+    font-weight: 500;
+    line-height: 1;
+}
+
+.admin-stat-revenue > strong {
+    color: var(--terracotta-dark);
+    font-size: 1.65rem;
+}
+
+.admin-stat-caption {
+    margin-top: 8px;
+    color: var(--muted);
+    font-size: 0.69rem;
+}
+
+.admin-content-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.8fr) minmax(250px, 0.75fr);
+    align-items: start;
+    gap: 18px;
+    margin-top: 22px;
+}
+
+.admin-panel {
+    min-width: 0;
+    border: 1px solid #eeece7;
+    background: #fff;
+}
+
+.admin-panel-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 22px 23px 17px;
+}
+
+.admin-panel-heading .eyebrow,
+.admin-next-panel .eyebrow {
+    margin-bottom: 9px;
+    font-size: 0.59rem;
+}
+
+.admin-panel-heading h2,
+.admin-next-panel h2 {
+    margin: 0;
+    font-family: var(--serif);
+    font-size: 1.5rem;
+    font-weight: 500;
+}
+
+.admin-panel-count {
+    display: grid;
+    width: 30px;
+    height: 30px;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--paper);
+    color: var(--terracotta-dark);
+    font-size: 0.72rem;
+}
+
+.admin-orders-table {
+    --bs-table-bg: transparent;
+    font-size: 0.74rem;
+}
+
+.admin-orders-table thead th {
+    padding: 11px 15px;
+    border-color: #eeece7;
+    background: #fbfaf7;
+    color: #89847a;
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.admin-orders-table tbody th,
+.admin-orders-table tbody td {
+    padding: 14px 15px;
+    border-color: #f0eee9;
+    white-space: nowrap;
+}
+
+.admin-orders-table tbody th {
+    font-family: var(--serif);
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.admin-customer-name,
+.admin-customer-email {
+    display: block;
+}
+
+.admin-customer-email {
+    margin-top: 3px;
+    color: var(--muted);
+    font-size: 0.66rem;
+}
+
+.admin-empty {
+    display: flex;
+    min-height: 220px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 25px;
+    text-align: center;
+}
+
+.admin-empty .empty-mark {
+    width: 43px;
+    height: 43px;
+    font-size: 1.1rem;
+}
+
+.admin-empty h3 {
+    margin: 14px 0 4px;
+    font-family: var(--serif);
+    font-size: 1.25rem;
+    font-weight: 500;
+}
+
+.admin-empty p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.75rem;
+}
+
+.admin-next-panel {
+    padding: 23px;
+    background: var(--cream);
+}
+
+.admin-next-panel h2 {
+    max-width: 260px;
+    font-size: 1.75rem;
+}
+
+.admin-next-panel > p:not(.eyebrow) {
+    margin: 13px 0 18px;
+    color: var(--muted);
+    font-size: 0.78rem;
+    line-height: 1.75;
+}
+
 .orders-heading,
 .order-detail-heading {
     display: flex;
@@ -1630,6 +1848,10 @@ body {
         grid-template-columns: minmax(0, 1.4fr) minmax(230px, 0.8fr);
     }
 
+    .admin-content-grid {
+        grid-template-columns: 1fr;
+    }
+
     .cart-layout {
         grid-template-columns: minmax(0, 1.3fr) minmax(250px, 0.9fr);
         gap: 18px;
@@ -1772,6 +1994,37 @@ body {
 
     .orders-page {
         padding: 40px 0 58px;
+    }
+
+    .admin-page {
+        padding: 40px 0 58px;
+    }
+
+    .admin-heading {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .admin-heading h1 {
+        font-size: 2.45rem;
+    }
+
+    .admin-stat-card {
+        min-height: 128px;
+        padding: 16px;
+    }
+
+    .admin-stat-card > strong {
+        font-size: 1.8rem;
+    }
+
+    .admin-stat-revenue > strong {
+        font-size: 1.5rem;
+    }
+
+    .admin-panel-heading {
+        padding: 18px;
     }
 
     .orders-heading {

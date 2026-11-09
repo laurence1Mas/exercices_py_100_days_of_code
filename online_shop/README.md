@@ -13,6 +13,7 @@ Flask-SQLAlchemy, Flask-Login, Flask-WTF et Bootstrap.
 - Panier persistant par client : ajout depuis les fiches produit, modification
   des quantités et suppression avec vérification du stock.
 - Historique des commandes et détail privé des commandes du client connecté.
+- Tableau de bord réservé au rôle `ADMIN`, avec statistiques et commandes récentes.
 - Inscription avec validation des champs et vérification de l'unicité de
   l'adresse e-mail (sans tenir compte de la casse).
 - Hachage des mots de passe avec Werkzeug.
@@ -23,6 +24,33 @@ Le checkout et le paiement ne sont pas encore implémentés ; le bouton de
 finalisation du panier reste donc désactivé. Les commandes visibles dans
 l'historique doivent être créées en base par une étape ultérieure ou par du code
 de test.
+
+### Créer le compte administrateur initial
+
+Le compte administrateur est créé au démarrage si `ADMIN_EMAIL` et
+`ADMIN_PASSWORD` sont tous deux définis. Le mot de passe doit contenir au moins
+12 caractères et est enregistré sous forme hachée. Aucun identifiant admin par
+défaut n'est codé dans le projet.
+
+Dans PowerShell, définissez vos propres valeurs avant le premier démarrage :
+
+```powershell
+$env:ADMIN_EMAIL = "votre-adresse@example.com"
+$env:ADMIN_PASSWORD = "choisissez-un-mot-de-passe-long-et-unique"
+python run.py
+```
+
+Le compte est créé avec le rôle `ADMIN`; connectez-vous ensuite par la page de
+connexion habituelle. Le rôle n'est pas accordé par l'inscription publique. Si
+l'adresse configurée appartient déjà à un compte non administrateur, le
+démarrage échoue explicitement au lieu de promouvoir ce compte.
+
+Les variables peuvent être retirées du terminal après la création du compte :
+
+```powershell
+Remove-Item Env:ADMIN_EMAIL
+Remove-Item Env:ADMIN_PASSWORD
+```
 
 ## Prérequis et lancement
 
@@ -77,6 +105,15 @@ définissez une clé privée dans l'environnement avant tout déploiement.
 3. La page de profil exige une session authentifiée. La déconnexion se fait par
    une requête POST protégée par CSRF et ferme cette session.
 
+### Espace administrateur
+
+1. Au démarrage, l'application crée le compte initial depuis les variables
+   `ADMIN_EMAIL` et `ADMIN_PASSWORD`, s'il n'existe pas déjà.
+2. Le tableau de bord `/admin/` exige une connexion et le rôle exact `ADMIN` ;
+   un client connecté reçoit une réponse 403.
+3. Le tableau de bord affiche les nombres de produits, clients et commandes,
+   les commandes en attente, les revenus payés et les cinq dernières commandes.
+
 ### Historique et détail des commandes
 
 1. `/orders/` exige une session utilisateur et ne charge que les commandes
@@ -105,7 +142,7 @@ définissez une clé privée dans l'environnement avant tout déploiement.
 ```text
 online_shop/
 ├── app/
-│   ├── admin/                 # Espace d'administration à développer
+│   ├── admin/                 # Tableau de bord administrateur
 │   ├── auth/                  # Formulaires et routes d'authentification
 │   ├── cart/                  # Routes d'ajout et de gestion du panier
 │   ├── orders/                # Historique et détail des commandes

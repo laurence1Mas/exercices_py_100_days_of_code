@@ -1,10 +1,48 @@
 
 from flask import Flask, abort, render_template, request
-from sqlalchemy import or_
+from sqlalchemy import func, or_
+from werkzeug.security import generate_password_hash
 
 from config import Config
 from app.extensions import db, login_manager, csrf
-from app.models import Category, Product
+from app.models import Category, Product, User
+
+
+def _create_configured_admin(app):
+    email = app.config["ADMIN_EMAIL"]
+    password = app.config["ADMIN_PASSWORD"]
+
+    if not email and not password:
+        return
+    if not email or not password:
+        raise RuntimeError(
+            "ADMIN_EMAIL et ADMIN_PASSWORD doivent être définis ensemble."
+        )
+    if "@" not in email or "." not in email.rsplit("@", 1)[-1]:
+        raise RuntimeError("ADMIN_EMAIL doit être une adresse e-mail valide.")
+    if len(password) < 12:
+        raise RuntimeError(
+            "ADMIN_PASSWORD doit contenir au moins 12 caractères."
+        )
+
+    existing_user = db.session.scalar(
+        db.select(User).where(func.lower(User.email) == email)
+    )
+    if existing_user is not None:
+        if existing_user.role != "ADMIN":
+            raise RuntimeError(
+                "L'adresse ADMIN_EMAIL appartient déjà à un compte non administrateur."
+            )
+        return
+
+    admin = User(
+        name=email.split("@", 1)[0],
+        email=email,
+        password=generate_password_hash(password),
+        role="ADMIN",
+    )
+    db.session.add(admin)
+    db.session.commit()
 
 
 def create_app():
@@ -31,10 +69,14 @@ def create_app():
     # Créer les tables
     with app.app_context():
         db.create_all()
+        _create_configured_admin(app)
 
     app.register_blueprint(auth)
     app.register_blueprint(cart)
     app.register_blueprint(orders)
+    from app.admin.routes import admin
+
+    app.register_blueprint(admin)
 
     @app.get("/")
     def home():

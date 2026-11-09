@@ -12,4 +12,9 @@
     <dt class="col-sm-3">Rôle</dt>
     <dd class="col-sm-9">{{ current_user.role }}</dd>
 </dl>
+{% if current_user.role == "ADMIN" %}
+<a class="btn btn-dark" href="{{ url_for('admin.dashboard') }}">
+    Ouvrir le tableau de bord administrateur
+</a>
+{% endif %}
 {% endblock %}
