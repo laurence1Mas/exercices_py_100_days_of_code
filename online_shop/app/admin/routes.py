@@ -9,11 +9,13 @@ from flask import (
     flash,
     redirect,
     render_template,
+    request,
     url_for,
 )
 from flask_login import current_user, login_required
 from PIL import Image, ImageOps
 from sqlalchemy import func
+from sqlalchemy import update
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 from app.admin.forms import CategoryForm, ProductForm
@@ -26,6 +28,11 @@ from app.models import (
     OrderItem,
     Product,
     User,
+)
+from app.orders.statuses import (
+    ORDER_STATUS_LABELS,
+    ORDER_STATUS_TRANSITIONS,
+    PAYMENT_STATUS_LABELS,
 )
 
 
@@ -59,6 +66,7 @@ def dashboard():
         pending_count=pending_count,
         paid_revenue=paid_revenue,
         recent_orders=recent_orders,
+        order_status_labels=ORDER_STATUS_LABELS,
     )
 
 
@@ -405,7 +413,78 @@ def orders():
             Order.id.desc(),
         )
     ).all()
-    return render_template("admin/orders.html", orders=orders)
+    return render_template(
+        "admin/orders.html",
+        orders=orders,
+        order_status_labels=ORDER_STATUS_LABELS,
+        payment_status_labels=PAYMENT_STATUS_LABELS,
+    )
+
+
+@admin.get("/orders/<int:order_id>")
+@login_required
+def order_detail(order_id):
+    order = db.get_or_404(Order, order_id)
+    next_statuses = ORDER_STATUS_TRANSITIONS.get(order.status, ())
+    return render_template(
+        "admin/order_detail.html",
+        order=order,
+        next_statuses=next_statuses,
+        order_status_labels=ORDER_STATUS_LABELS,
+        payment_status_labels=PAYMENT_STATUS_LABELS,
+    )
+
+
+@admin.post("/orders/<int:order_id>/status")
+@login_required
+def update_order_status(order_id):
+    order = db.get_or_404(Order, order_id)
+    new_status = request.form.get("status", "")
+    allowed_statuses = ORDER_STATUS_TRANSITIONS.get(order.status, ())
+    if new_status not in allowed_statuses:
+        flash("Cette transition de statut n’est pas autorisée.", "error")
+        return redirect(url_for("admin.order_detail", order_id=order.id))
+
+    current_status = order.status
+    status_update = {"status": new_status}
+    if new_status == "CANCELLED":
+        if order.payment_status == "PAID":
+            status_update["payment_status"] = "REFUNDED"
+    updated_order = db.session.execute(
+        update(Order)
+        .where(
+            Order.id == order.id,
+            Order.status == current_status,
+        )
+        .values(**status_update)
+    )
+    if updated_order.rowcount != 1:
+        db.session.rollback()
+        flash(
+            "La commande a déjà été mise à jour. Rechargez la page pour voir son état.",
+            "error",
+        )
+        return redirect(url_for("admin.order_detail", order_id=order.id))
+
+    if new_status == "CANCELLED":
+        for item in order.items:
+            db.session.execute(
+                update(Product)
+                .where(Product.id == item.product_id)
+                .values(stock=Product.stock + item.quantity)
+            )
+    try:
+        db.session.commit()
+    except SQLAlchemyError:
+        db.session.rollback()
+        raise
+
+    flash(
+        f"La commande #{order.id} est maintenant "
+        f"{ORDER_STATUS_LABELS[new_status].lower()}.",
+        "success",
+    )
+    return redirect(url_for("admin.order_detail", order_id=order.id))
 
 
 @admin.get("/messages")
@@ -463,7 +542,9 @@ def _dashboard_metrics():
         db.select(func.count(Order.id))
     ) or 0
     pending_count = db.session.scalar(
-        db.select(func.count(Order.id)).where(Order.status == "PENDING")
+        db.select(func.count(Order.id)).where(
+            Order.status.in_(("PENDING", "PROCESSING"))
+        )
     ) or 0
     paid_revenue = db.session.scalar(
         db.select(func.coalesce(func.sum(Order.total_amount), 0)).where(

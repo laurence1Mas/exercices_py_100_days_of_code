@@ -50,7 +50,7 @@
                     href="{{ url_for('admin.categories') }}">
                     <span aria-hidden="true"><i class="fa-solid fa-tags"></i></span> Catégories
                 </a>
-                <a class="admin-sidebar-link{% if request.endpoint == 'admin.orders' %} admin-sidebar-active{% endif %}"
+                <a class="admin-sidebar-link{% if request.endpoint in ['admin.orders', 'admin.order_detail', 'admin.update_order_status'] %} admin-sidebar-active{% endif %}"
                     href="{{ url_for('admin.orders') }}">
                     <span aria-hidden="true"><i class="fa-solid fa-clipboard-list"></i></span> Commandes
                 </a>

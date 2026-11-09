@@ -1,0 +1,106 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Commande #{{ order.id }} — Administration Atelier{% endblock %}
+
+{% block admin_content %}
+<section class="admin-page">
+    <div class="admin-content">
+        <div class="admin-heading">
+            <div>
+                <p class="eyebrow"><span class="eyebrow-line"></span> SUIVI DE COMMANDE</p>
+                <h1>Commande #{{ order.id }}</h1>
+                <p>
+                    {{ order.user.name }} · {{ order.user.email }} ·
+                    {{ order.created_at.strftime("%d/%m/%Y à %H:%M") }}
+                </p>
+            </div>
+            <a class="admin-store-link" href="{{ url_for('admin.orders') }}">
+                <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+                Toutes les commandes
+            </a>
+        </div>
+
+        <div class="order-detail-layout admin-order-detail-layout">
+            <section class="order-items-panel" aria-labelledby="admin-order-items-title">
+                <h2 id="admin-order-items-title">Articles commandés</h2>
+                {% for item in order.items %}
+                <article class="order-item">
+                    <div class="order-item-image">
+                        {% if item.product.image %}
+                        <img src="{{ item.product.image }}" alt="{{ item.product.name }}" loading="lazy">
+                        {% else %}
+                        <span aria-hidden="true">{{ item.product.name[:1]|upper }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="order-item-info">
+                        <h3>{{ item.product.name }}</h3>
+                        <p>Quantité : {{ item.quantity }}</p>
+                    </div>
+                    <div class="order-item-price">
+                        <span>{{ "%.2f"|format(item.unit_price) }} € / unité</span>
+                        <strong>{{ "%.2f"|format(item.unit_price * item.quantity) }} €</strong>
+                    </div>
+                </article>
+                {% endfor %}
+            </section>
+
+            <aside class="order-summary-panel">
+                <p class="eyebrow"><span class="eyebrow-line"></span> ÉTAT</p>
+                <h2>Suivi de la commande</h2>
+                <div class="order-summary-row">
+                    <span>Commande</span>
+                    <strong>{{ order_status_labels.get(order.status, order.status|replace("_", " ")|capitalize) }}</strong>
+                </div>
+                <div class="order-summary-row">
+                    <span>Paiement</span>
+                    <strong>{{ payment_status_labels.get(order.payment_status, order.payment_status|replace("_", " ")|capitalize) }}</strong>
+                </div>
+                <div class="order-summary-total">
+                    <span>Total</span>
+                    <strong>{{ "%.2f"|format(order.total_amount) }} €</strong>
+                </div>
+
+                {% if next_statuses %}
+                <form method="post"
+                      action="{{ url_for('admin.update_order_status', order_id=order.id) }}"
+                      data-status-form>
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <label class="form-label" for="order-status">Mettre à jour le statut</label>
+                    <select class="form-select admin-order-status-select" id="order-status" name="status" required>
+                        {% for status in next_statuses %}
+                        <option value="{{ status }}">{{ order_status_labels[status] }}</option>
+                        {% endfor %}
+                    </select>
+                    {% if "CANCELLED" in next_statuses %}
+                    <p class="admin-order-cancel-note">
+                        L’annulation rembourse le paiement simulé et remet les articles en stock.
+                    </p>
+                    {% endif %}
+                    <button class="btn btn-terracotta admin-order-status-submit" type="submit">
+                        Enregistrer le statut
+                    </button>
+                </form>
+                {% else %}
+                <p class="admin-order-terminal-note">
+                    Cette commande a atteint son statut final ; aucune autre transition n’est disponible.
+                </p>
+                {% endif %}
+            </aside>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block admin_scripts %}
+<script>
+    const statusForm = document.querySelector("[data-status-form]");
+    if (statusForm) {
+        statusForm.addEventListener("submit", (event) => {
+            if (statusForm.querySelector("#order-status").value === "CANCELLED"
+                && !window.confirm("Annuler cette commande, simuler son remboursement et rétablir le stock ?")) {
+                event.preventDefault();
+            }
+        });
+    }
+</script>
+{% endblock %}

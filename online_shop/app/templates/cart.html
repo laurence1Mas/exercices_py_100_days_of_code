@@ -102,12 +102,18 @@
                     <span>Total provisoire</span>
                     <strong>{{ "%.2f"|format(total) }} €</strong>
                 </div>
+                {% if checkout_available %}
+                <a class="btn cart-checkout-button" href="{{ url_for('cart.checkout') }}">
+                    Passer la commande
+                </a>
+                {% else %}
                 <button class="btn cart-checkout-button" type="button" disabled>
-                    Commander prochainement
+                    Stock à vérifier
                 </button>
+                {% endif %}
                 <p class="cart-checkout-note">
-                    Le paiement et la finalisation de la commande seront disponibles
-                    dans une prochaine étape.
+                    Le paiement est simulé : aucune donnée bancaire n’est demandée
+                    ni transmise.
                 </p>
                 <a class="cart-secure-note" href="{{ url_for('shop') }}">
                     Revenir à la boutique <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>

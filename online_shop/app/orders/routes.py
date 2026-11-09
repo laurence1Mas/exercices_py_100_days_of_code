@@ -3,6 +3,7 @@ from flask_login import current_user, login_required
 
 from app.extensions import db
 from app.models import Order
+from app.orders.statuses import ORDER_STATUS_LABELS, PAYMENT_STATUS_LABELS
 
 
 orders = Blueprint("orders", __name__, url_prefix="/orders")
@@ -16,7 +17,12 @@ def index():
         .where(Order.user_id == current_user.id)
         .order_by(Order.created_at.desc(), Order.id.desc())
     ).all()
-    return render_template("orders.html", orders=user_orders)
+    return render_template(
+        "orders.html",
+        orders=user_orders,
+        order_status_labels=ORDER_STATUS_LABELS,
+        payment_status_labels=PAYMENT_STATUS_LABELS,
+    )
 
 
 @orders.get("/<int:order_id>")
@@ -30,4 +36,9 @@ def detail(order_id):
     )
     if order is None:
         abort(404)
-    return render_template("orders/detail.html", order=order)
+    return render_template(
+        "orders/detail.html",
+        order=order,
+        order_status_labels=ORDER_STATUS_LABELS,
+        payment_status_labels=PAYMENT_STATUS_LABELS,
+    )

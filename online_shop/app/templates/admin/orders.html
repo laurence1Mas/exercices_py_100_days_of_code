@@ -32,6 +32,7 @@
                             <th scope="col">Statut</th>
                             <th scope="col">Paiement</th>
                             <th scope="col" class="text-end">Total</th>
+                            <th scope="col">Détail</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -45,12 +46,18 @@
                             <td>{{ order.created_at.strftime("%d/%m/%Y") }}</td>
                             <td>
                                 <span class="order-status-badge order-status-{{ order.status|lower }}">
-                                    {{ order.status|replace("_", " ")|capitalize }}
+                                    {{ order_status_labels.get(order.status, order.status|replace("_", " ")|capitalize) }}
                                 </span>
                             </td>
-                            <td>{{ order.payment_status|replace("_", " ")|capitalize }}</td>
+                            <td>{{ payment_status_labels.get(order.payment_status, order.payment_status|replace("_", " ")|capitalize) }}</td>
                             <td class="text-end fw-semibold">
                                 {{ "%.2f"|format(order.total_amount) }} €
+                            </td>
+                            <td>
+                                <a class="order-detail-link"
+                                   href="{{ url_for('admin.order_detail', order_id=order.id) }}">
+                                    Gérer <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                                </a>
                             </td>
                         </tr>
                         {% endfor %}

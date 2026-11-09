@@ -32,10 +32,9 @@ Flask-SQLAlchemy, Flask-Login, Flask-WTF et Bootstrap.
 - Icônes de l'interface fournies par Font Awesome 6 via CDN dans les layouts
   client et administrateur.
 
-Le checkout et le paiement ne sont pas encore implémentés ; le bouton de
-finalisation du panier reste donc désactivé. Les commandes visibles dans
-l'historique doivent être créées en base par une étape ultérieure ou par du code
-de test.
+Le checkout comprend une étape de récapitulatif et une confirmation de paiement
+simulé. Aucune donnée bancaire n'est collectée ; les commandes payées sont
+enregistrées et le stock est mis à jour en base.
 
 ### Créer le compte administrateur initial
 
@@ -217,8 +216,7 @@ préserver les relations et les règles de validation.
    client connecté. Une commande inexistante ou appartenant à un autre client
    renvoie une réponse 404.
 4. Le détail reprend les quantités et prix unitaires enregistrés dans les
-   lignes de commande. Les commandes apparaîtront automatiquement lorsque le
-   checkout sera implémenté.
+   lignes de commande ainsi que l'état du paiement simulé.
 
 ### Panier
 
@@ -228,7 +226,25 @@ préserver les relations et les règles de validation.
 3. Le client peut modifier la quantité ou retirer un article. Chaque action
    vérifie que la ligne lui appartient et que le stock permet cette quantité.
 4. Le sous-total et le total provisoire sont recalculés à partir des prix
-   actuels du catalogue. Le checkout reste désactivé jusqu'à son implémentation.
+   actuels du catalogue. Le bouton de commande est désactivé si une quantité
+   dépasse le stock disponible.
+
+### Checkout et paiement simulé
+
+1. `/cart/checkout` affiche le récapitulatif et recalcule le total côté serveur ;
+   les prix et les quantités envoyés par le navigateur ne sont pas utilisés.
+2. À la confirmation, le serveur revérifie le stock et le décrémente dans la
+   même transaction SQLite que la création de la commande et de ses lignes.
+   Si un article n'est plus disponible, aucune commande n'est créée et le
+   panier est conservé.
+3. Le paiement est volontairement simulé : aucun numéro de carte ni donnée
+   bancaire n'est demandé ou enregistré. La confirmation crée une commande
+   `PROCESSING` avec un paiement `PAID`, vide le panier et affiche le détail.
+4. Depuis `/admin/orders`, un administrateur ouvre le détail d'une commande et
+   peut la faire passer de « En préparation » à « Expédiée », puis « Livrée ».
+   Une commande encore en préparation peut être annulée ; cette action simule
+   le remboursement et remet les quantités en stock. Les transitions sont
+   vérifiées côté serveur.
 
 ## Structure du projet
 
@@ -252,9 +268,8 @@ online_shop/
 
 ## Prochaines étapes
 
-1. Implémenter le checkout, la simulation de paiement et la création de commandes.
-2. Ajouter la gestion des statuts de traitement des commandes dans l'administration.
-3. Compléter les tests fonctionnels et préparer le déploiement.
+1. Compléter les tests automatisés des parcours client et administrateur.
+2. Préparer le déploiement avec une configuration et un serveur WSGI adaptés.
 
 Le serveur lancé par `python run.py` est un serveur de développement. Utilisez
 un serveur WSGI adapté pour un déploiement en production.
