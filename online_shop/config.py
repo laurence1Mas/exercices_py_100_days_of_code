@@ -16,3 +16,12 @@ class Config:
     )
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    PRODUCT_UPLOAD_FOLDER = os.path.join(
+        BASE_DIR,
+        "app",
+        "static",
+        "uploads",
+        "products",
+    )
+    MAX_PRODUCT_IMAGE_SIZE = 15 * 1024 * 1024
+    MAX_CONTENT_LENGTH = MAX_PRODUCT_IMAGE_SIZE + 128 * 1024

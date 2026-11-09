@@ -19,7 +19,9 @@ Flask-SQLAlchemy, Flask-Login, Flask-WTF et Bootstrap.
   contenant des produits ne peut pas être supprimée.
 - Gestion CRUD des produits depuis la page `/admin/products`, avec formulaires
   dans des modales Bootstrap. Un produit référencé par un panier ou une commande
-  ne peut pas être supprimé.
+  ne peut pas être supprimé. Les administrateurs peuvent importer des images
+  JPG, PNG ou WEBP jusqu'à 5 Mo ; elles sont vérifiées puis enregistrées dans
+  `app/static/uploads/products` sous un nom généré par l'application.
 - Formulaire de contact avec validation et enregistrement des messages en base ;
   les administrateurs les consultent depuis `/admin/messages`.
 - Inscription avec validation des champs et vérification de l'unicité de

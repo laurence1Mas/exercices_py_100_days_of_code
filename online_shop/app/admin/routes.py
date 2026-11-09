@@ -1,7 +1,20 @@
-from flask import Blueprint, abort, flash, redirect, render_template, url_for
+import re
+from pathlib import Path
+from uuid import uuid4
+
+from flask import (
+    Blueprint,
+    abort,
+    current_app,
+    flash,
+    redirect,
+    render_template,
+    url_for,
+)
 from flask_login import current_user, login_required
+from PIL import Image, ImageOps
 from sqlalchemy import func
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 from app.admin.forms import CategoryForm, ProductForm
 from app.extensions import db
@@ -60,12 +73,24 @@ def products():
 def create_product():
     form = _product_form()
     if form.validate_on_submit():
-        product = _product_from_form(form)
+        try:
+            uploaded_image = _store_product_image(form.image_file.data)
+        except (OSError, ValueError):
+            current_app.logger.exception("Unable to save uploaded product image")
+            flash("L’image n’a pas pu être enregistrée. Réessayez.", "error")
+            return _render_products_page(
+                product_form=form,
+                active_modal="create",
+            )
+
+        product = _product_from_form(form, uploaded_image=uploaded_image)
         db.session.add(product)
         try:
             db.session.commit()
         except IntegrityError:
             db.session.rollback()
+            if uploaded_image:
+                _remove_uncommitted_product_image(uploaded_image)
             flash(
                 "Le produit n’a pas pu être enregistré. "
                 "Vérifiez la catégorie choisie.",
@@ -75,6 +100,11 @@ def create_product():
                 product_form=form,
                 active_modal="create",
             )
+        except SQLAlchemyError:
+            db.session.rollback()
+            if uploaded_image:
+                _remove_uncommitted_product_image(uploaded_image)
+            raise
         else:
             flash("Le produit a été créé.", "success")
             return redirect(url_for("admin.products"))
@@ -88,12 +118,28 @@ def edit_product(product_id):
     product = db.get_or_404(Product, product_id)
     form = _product_form(obj=product)
     if form.validate_on_submit():
+        old_image = product.image
+        try:
+            uploaded_image = _store_product_image(form.image_file.data)
+        except (OSError, ValueError):
+            current_app.logger.exception("Unable to save uploaded product image")
+            flash("L’image n’a pas pu être enregistrée. Réessayez.", "error")
+            return _render_products_page(
+                product_form=form,
+                active_modal="edit",
+                editing_product=product,
+            )
+
         form.populate_obj(product)
         product.price = float(form.price.data)
+        if uploaded_image:
+            product.image = uploaded_image
         try:
             db.session.commit()
         except IntegrityError:
             db.session.rollback()
+            if uploaded_image:
+                _remove_uncommitted_product_image(uploaded_image)
             flash(
                 "Le produit n’a pas pu être modifié. "
                 "Vérifiez la catégorie choisie.",
@@ -104,7 +150,14 @@ def edit_product(product_id):
                 active_modal="edit",
                 editing_product=product,
             )
+        except SQLAlchemyError:
+            db.session.rollback()
+            if uploaded_image:
+                _remove_uncommitted_product_image(uploaded_image)
+            raise
         else:
+            if old_image != product.image:
+                _remove_product_image_if_unused(old_image)
             flash("Le produit a été modifié.", "success")
             return redirect(url_for("admin.products"))
 
@@ -119,6 +172,7 @@ def edit_product(product_id):
 @login_required
 def delete_product(product_id):
     product = db.get_or_404(Product, product_id)
+    image = product.image
     has_cart_references = db.session.scalar(
         db.select(CartItem.id).where(CartItem.product_id == product.id).limit(1)
     )
@@ -142,6 +196,7 @@ def delete_product(product_id):
                 "error",
             )
         else:
+            _remove_product_image_if_unused(image)
             flash("Le produit a été supprimé.", "success")
     return redirect(url_for("admin.products"))
 
@@ -157,15 +212,82 @@ def _product_form(obj=None):
     return form
 
 
-def _product_from_form(form):
+def _product_from_form(form, uploaded_image=None):
     return Product(
         name=form.name.data,
         description=form.description.data or None,
         price=float(form.price.data),
         stock=form.stock.data,
-        image=form.image.data or None,
+        image=uploaded_image or form.image.data or None,
         category_id=form.category_id.data,
     )
+
+
+def _store_product_image(upload):
+    if upload is None or not upload.filename:
+        return None
+
+    with Image.open(upload.stream) as image:
+        image_format = image.format
+        image = ImageOps.exif_transpose(image)
+        if image_format == "JPEG" and image.mode not in ("RGB", "L"):
+            image = image.convert("RGB")
+        elif image_format == "WEBP" and image.mode not in ("RGB", "RGBA"):
+            image = image.convert("RGBA")
+
+        extensions = {"JPEG": ".jpg", "PNG": ".png", "WEBP": ".webp"}
+        extension = extensions[image_format]
+        filename = f"{uuid4().hex}{extension}"
+        upload_folder = Path(current_app.config["PRODUCT_UPLOAD_FOLDER"])
+        upload_folder.mkdir(parents=True, exist_ok=True)
+        image_path = upload_folder / filename
+        try:
+            save_options = {"quality": 90} if image_format in {"JPEG", "WEBP"} else {}
+            if image_format == "PNG":
+                save_options["optimize"] = True
+            image.save(image_path, format=image_format, **save_options)
+        except (OSError, ValueError):
+            image_path.unlink(missing_ok=True)
+            raise
+
+    return url_for("static", filename=f"uploads/products/{filename}")
+
+
+def _remove_product_image_if_unused(image_url):
+    image_path = _product_image_path(image_url)
+    if image_path is None:
+        return
+    still_used = db.session.scalar(
+        db.select(Product.id).where(Product.image == image_url).limit(1)
+    )
+    if not still_used:
+        _unlink_product_image(image_path)
+
+
+def _remove_uncommitted_product_image(image_url):
+    image_path = _product_image_path(image_url)
+    if image_path is not None:
+        _unlink_product_image(image_path)
+
+
+def _product_image_path(image_url):
+    prefix = url_for("static", filename="uploads/products/")
+    if not image_url or not image_url.startswith(prefix):
+        return None
+
+    filename = image_url[len(prefix):]
+    if not re.fullmatch(r"[0-9a-f]{32}\.(?:jpg|png|webp)", filename):
+        return None
+    return Path(current_app.config["PRODUCT_UPLOAD_FOLDER"]) / filename
+
+
+def _unlink_product_image(image_path):
+    try:
+        image_path.unlink()
+    except FileNotFoundError:
+        return
+    except OSError:
+        current_app.logger.exception("Unable to remove unused product image")
 
 
 def _render_products_page(

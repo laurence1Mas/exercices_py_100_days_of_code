@@ -39,10 +39,28 @@
     <label class="form-label" for="{{ prefix }}-image">{{ form.image.label.text }}</label>
     {{ form.image(class="form-control" + (" is-invalid" if form.image.errors else ""),
                   id=prefix ~ "-image", maxlength="255",
-                  placeholder="https://... ou images/produit.jpg") }}
+                  placeholder="https://... ou images/produit.jpg",
+                  **{"data-product-image-url": "true"}) }}
     {% for error in form.image.errors %}
     <div class="invalid-feedback">{{ error }}</div>
     {% endfor %}
+</div>
+<div class="mb-3">
+    <label class="form-label" for="{{ prefix }}-image_file">{{ form.image_file.label.text }}</label>
+    {{ form.image_file(class="form-control" + (" is-invalid" if form.image_file.errors else ""),
+                       id=prefix ~ "-image_file",
+                       accept="image/jpeg,image/png,image/webp") }}
+    <div class="form-text">JPG, PNG ou WEBP, 5 Mo maximum.</div>
+    {% for error in form.image_file.errors %}
+    <div class="invalid-feedback">{{ error }}</div>
+    {% endfor %}
+</div>
+<div class="admin-product-image-preview" id="{{ prefix }}-image-preview">
+    <img alt="Aperçu de l’image du produit" hidden>
+    <span class="admin-product-image-preview-placeholder">
+        <i class="fa-solid fa-image" aria-hidden="true"></i>
+        Aperçu de l’image
+    </span>
 </div>
 <div class="mb-2">
     <label class="form-label" for="{{ prefix }}-category_id">{{ form.category_id.label.text }}</label>
@@ -192,7 +210,8 @@
      data-open-on-load="{{ 'true' if active_modal == 'create' else 'false' }}">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
-            <form method="post" action="{{ url_for('admin.create_product') }}">
+            <form method="post" enctype="multipart/form-data"
+                  action="{{ url_for('admin.create_product') }}">
                 {{ product_form.csrf_token(id="create-product-csrf-token") }}
                 <div class="modal-header">
                     <div>
@@ -224,7 +243,7 @@
      data-open-on-load="{{ 'true' if active_modal == 'edit' else 'false' }}">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
-            <form id="editProductForm" method="post"
+            <form id="editProductForm" method="post" enctype="multipart/form-data"
                   action="{{ url_for('admin.edit_product', product_id=editing_product.id)
                             if editing_product else url_for('admin.products') }}">
                 {{ product_form.csrf_token(id="edit-product-csrf-token") }}
@@ -292,6 +311,56 @@
 
 {% block admin_scripts %}
 <script>
+    function updateProductImagePreview(prefix, source) {
+        const preview = document.getElementById(`${prefix}-image-preview`);
+        const image = preview.querySelector("img");
+        const placeholder = preview.querySelector(".admin-product-image-preview-placeholder");
+        const previousObjectUrl = preview.dataset.objectUrl;
+
+        if (previousObjectUrl) {
+            URL.revokeObjectURL(previousObjectUrl);
+            delete preview.dataset.objectUrl;
+        }
+
+        if (!source) {
+            image.hidden = true;
+            image.removeAttribute("src");
+            placeholder.hidden = false;
+            return;
+        }
+
+        image.onerror = () => {
+            image.hidden = true;
+            placeholder.hidden = false;
+        };
+        image.onload = () => {
+            image.hidden = false;
+            placeholder.hidden = true;
+        };
+        image.src = source;
+    }
+
+    document.querySelectorAll("[data-product-image-url]").forEach((input) => {
+        const prefix = input.id.replace(/-image$/, "");
+        const fileInput = document.getElementById(`${prefix}-image_file`);
+        input.addEventListener("input", () => {
+            fileInput.value = "";
+            updateProductImagePreview(prefix, input.value.trim());
+        });
+        fileInput.addEventListener("change", () => {
+            const file = fileInput.files[0];
+            const preview = document.getElementById(`${prefix}-image-preview`);
+            if (!file) {
+                updateProductImagePreview(prefix, input.value.trim());
+                return;
+            }
+            const objectUrl = URL.createObjectURL(file);
+            updateProductImagePreview(prefix, objectUrl);
+            preview.dataset.objectUrl = objectUrl;
+        });
+        updateProductImagePreview(prefix, input.value.trim());
+    });
+
     const editProductModal = document.getElementById("editProductModal");
     if (editProductModal) {
         editProductModal.addEventListener("show.bs.modal", (event) => {
@@ -306,6 +375,8 @@
             form.querySelector("#edit-product-stock").value = button.dataset.stock;
             form.querySelector("#edit-product-image").value = button.dataset.image;
             form.querySelector("#edit-product-category_id").value = button.dataset.categoryId;
+            form.querySelector("#edit-product-image_file").value = "";
+            updateProductImagePreview("edit-product", button.dataset.image);
         });
     }
 
