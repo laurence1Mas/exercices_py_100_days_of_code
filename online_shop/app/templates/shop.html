@@ -15,7 +15,7 @@
                 </p>
             </div>
             <div class="catalog-aside" aria-hidden="true">
-                <span class="catalog-aside-star">✳</span>
+                <i class="catalog-aside-star fa-solid fa-sparkles"></i>
                 <span>LE BEAU<br>AU QUOTIDIEN</span>
             </div>
         </div>
@@ -42,7 +42,9 @@
                            value="{{ search_query }}" placeholder="Rechercher une pièce..."
                            maxlength="80">
                     <button class="catalog-search-button" type="submit"
-                            aria-label="Rechercher">⌕</button>
+                            aria-label="Rechercher">
+                        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                    </button>
                 </div>
                 <label class="visually-hidden" for="category">Filtrer par catégorie</label>
                 <select class="form-select catalog-category" name="category" id="category">
@@ -112,16 +114,17 @@
         </div>
         {% elif search_query or selected_category %}
         <div class="catalog-empty">
-            <span class="empty-mark" aria-hidden="true">⌕</span>
+            <i class="empty-mark fa-solid fa-magnifying-glass" aria-hidden="true"></i>
             <h3>Aucune pièce trouvée</h3>
             <p>Essayez un autre mot ou affichez à nouveau toute la sélection.</p>
             <a class="btn btn-terracotta" href="{{ url_for('shop') }}">
-                Voir toute la boutique <span aria-hidden="true">↗</span>
+                Voir toute la boutique
+                <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
             </a>
         </div>
         {% else %}
         <div class="catalog-empty">
-            <span class="empty-mark" aria-hidden="true">✳</span>
+            <i class="empty-mark fa-solid fa-sparkles" aria-hidden="true"></i>
             <h3>La sélection se prépare</h3>
             <p>Nos premières pièces arrivent bientôt. Revenez nous voir très vite.</p>
         </div>

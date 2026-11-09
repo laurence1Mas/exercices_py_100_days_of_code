@@ -22,6 +22,8 @@ Flask-SQLAlchemy, Flask-Login, Flask-WTF et Bootstrap.
 - Hachage des mots de passe avec Werkzeug.
 - Connexion, déconnexion protégée par CSRF et page de profil protégée.
 - Rôle `CUSTOMER` attribué par défaut aux nouveaux comptes.
+- Icônes de l'interface fournies par Font Awesome 6 via CDN dans les layouts
+  client et administrateur.
 
 Le checkout et le paiement ne sont pas encore implémentés ; le bouton de
 finalisation du panier reste donc désactivé. Les commandes visibles dans
@@ -60,6 +62,78 @@ Ouvrez ensuite <http://127.0.0.1:5000/>. La base `ecommerce.db` est créée dans
 La configuration lit la clé secrète depuis la variable d'environnement
 `SECRET_KEY`. Une valeur de développement est prévue pour faciliter le démarrage ;
 définissez une clé privée dans l'environnement avant tout déploiement.
+
+## Base de données SQLite en local
+
+### Emplacement et démarrage
+
+La configuration de `online_shop/config.py` construit le chemin de la base à
+partir du dossier du projet. En local, le fichier utilisé est donc
+`online_shop/ecommerce.db` ; il ne s'agit pas d'une base distante. SQLite stocke
+les données dans ce fichier et Python inclut le module `sqlite3` pour le lire.
+
+Au démarrage, `run.py` appelle `create_app()`. La factory initialise
+Flask-SQLAlchemy puis exécute `db.create_all()` dans un contexte Flask. Cette
+instruction crée les tables qui n'existent pas encore sans supprimer les
+données déjà enregistrées. Elle ne remplace pas un système de migrations :
+après une modification de colonnes ou de contraintes d'une table existante,
+il faut prévoir une migration adaptée.
+
+### Tables et relations
+
+Les modèles de `app/models.py` décrivent les tables principales :
+
+| Table | Données enregistrées |
+|---|---|
+| `users` | Comptes, adresse e-mail unique, rôle et mot de passe haché |
+| `categories` | Catégories du catalogue |
+| `products` | Produits, prix, stock et catégorie |
+| `cart_items` | Produits et quantités du panier de chaque client |
+| `orders` | Commandes, total et statuts de commande et de paiement |
+| `order_items` | Articles et prix unitaire mémorisé au moment de la commande |
+| `contact_messages` | Nom, e-mail, sujet, message et date des messages de contact |
+
+Les colonnes `user_id`, `product_id`, `category_id` et `order_id` relient les
+enregistrements entre eux. Par exemple, un client possède des lignes de panier
+et des commandes ; une catégorie regroupe ses produits ; une commande possède
+ses lignes d'articles. L'ORM SQLAlchemy traduit les opérations de l'application
+en requêtes SQLite et représente ces liens par des relations Python.
+
+### Enregistrement des changements
+
+Les routes ajoutent ou modifient les données au moyen de SQLAlchemy. Les
+changements sont validés avec `db.session.commit()` ; en cas d'erreur lors d'une
+transaction, `db.session.rollback()` permet de l'annuler. Les formulaires du
+site et les vérifications de rôle restent le moyen normal d'accéder aux
+données. Les mots de passe ne sont pas enregistrés en clair.
+
+### Consulter la base localement
+
+Depuis le dossier `online_shop`, ouvrez une console Python :
+
+```powershell
+python
+```
+
+Puis listez les tables en lecture seule avec le module standard `sqlite3` :
+
+```python
+import sqlite3
+
+connection = sqlite3.connect("file:ecommerce.db?mode=ro", uri=True)
+tables = connection.execute(
+    "SELECT name FROM sqlite_master "
+    "WHERE type = 'table' AND name NOT LIKE 'sqlite_%' ORDER BY name"
+).fetchall()
+print(tables)
+connection.close()
+```
+
+On peut aussi ouvrir `ecommerce.db` avec une application compatible SQLite,
+comme DB Browser for SQLite. Faites une copie du fichier avant toute
+intervention manuelle et évitez de modifier les tables directement pendant que
+l'application tourne : utilisez l'application ou un script SQLAlchemy pour
+préserver les relations et les règles de validation.
 
 ## Algorithme actuel
 

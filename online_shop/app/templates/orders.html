@@ -12,7 +12,8 @@
                 <p>Retrouvez ici vos achats et leur statut.</p>
             </div>
             <a class="orders-back-link" href="{{ url_for('shop') }}">
-                Continuer mes découvertes <span aria-hidden="true">→</span>
+                Continuer mes découvertes
+                <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
             </a>
         </div>
 
@@ -50,7 +51,7 @@
                     </div>
                     <a class="order-detail-link"
                        href="{{ url_for('orders.detail', order_id=order.id) }}">
-                        Voir le détail <span aria-hidden="true">→</span>
+                        Voir le détail <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
                     </a>
                 </div>
             </article>
@@ -58,14 +59,15 @@
         </div>
         {% else %}
         <div class="orders-empty">
-            <span class="empty-mark" aria-hidden="true">✳</span>
+            <i class="empty-mark fa-solid fa-sparkles" aria-hidden="true"></i>
             <h2>Pas encore de commande</h2>
             <p>
                 Vos prochaines commandes apparaîtront ici. La boutique prépare
                 encore son parcours d’achat.
             </p>
             <a class="btn btn-terracotta" href="{{ url_for('shop') }}">
-                Découvrir la boutique <span aria-hidden="true">↗</span>
+                Découvrir la boutique
+                <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
             </a>
         </div>
         {% endif %}

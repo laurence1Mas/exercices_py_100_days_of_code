@@ -16,11 +16,13 @@
                 <div class="hero-actions">
                     {% if current_user.is_authenticated %}
                     <a class="btn btn-terracotta" href="{{ url_for('auth.profile') }}">
-                        Découvrir mon espace <span aria-hidden="true">↗</span>
+                        Découvrir mon espace
+                        <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
                     </a>
                     {% else %}
                     <a class="btn btn-terracotta" href="{{ url_for('auth.register') }}">
-                        Rejoindre l’aventure <span aria-hidden="true">↗</span>
+                        Rejoindre l’aventure
+                        <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
                     </a>
                     <a class="hero-login-link" href="{{ url_for('auth.login') }}">
                         Déjà membre ? Se connecter
@@ -42,7 +44,7 @@
                         <span class="caption-title">Des choix faits avec intention.</span>
                     </div>
                     <div class="visual-stamp" aria-label="Choisi avec soin">
-                        <span aria-hidden="true">✳</span>
+                        <i class="fa-solid fa-sparkles" aria-hidden="true"></i>
                         <span>CHOISI<br>AVEC SOIN</span>
                     </div>
                 </div>
@@ -67,7 +69,7 @@
             <div class="col-md-4">
                 <article class="universe-card universe-card-sand">
                     <span class="universe-number">01</span>
-                    <span class="universe-symbol" aria-hidden="true">⌂</span>
+                    <i class="universe-symbol fa-solid fa-house" aria-hidden="true"></i>
                     <div>
                         <h3>La maison</h3>
                         <p>Des détails qui font du bien.</p>
@@ -78,7 +80,7 @@
             <div class="col-md-4">
                 <article class="universe-card universe-card-rose">
                     <span class="universe-number">02</span>
-                    <span class="universe-symbol" aria-hidden="true">✳</span>
+                    <i class="universe-symbol fa-solid fa-sparkles" aria-hidden="true"></i>
                     <div>
                         <h3>Les essentiels</h3>
                         <p>Le beau dans tous les jours.</p>
@@ -89,7 +91,7 @@
             <div class="col-md-4">
                 <article class="universe-card universe-card-sage">
                     <span class="universe-number">03</span>
-                    <span class="universe-symbol" aria-hidden="true">◌</span>
+                    <i class="universe-symbol fa-solid fa-gift" aria-hidden="true"></i>
                     <div>
                         <h3>Les idées cadeaux</h3>
                         <p>Une attention qui a du sens.</p>
@@ -113,16 +115,16 @@
                 </p>
                 {% if current_user.is_authenticated %}
                 <a class="approach-link" href="{{ url_for('auth.profile') }}">
-                    Retrouver mon espace <span aria-hidden="true">→</span>
+                    Retrouver mon espace <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
                 </a>
                 {% else %}
                 <a class="approach-link" href="{{ url_for('auth.register') }}">
-                    Créer mon espace client <span aria-hidden="true">→</span>
+                    Créer mon espace client <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
                 </a>
                 {% endif %}
             </div>
             <div class="approach-mark" aria-hidden="true">
-                <span>atelier</span><span class="mark-star">✳</span>
+                <span>atelier</span><i class="mark-star fa-solid fa-sparkles"></i>
             </div>
         </div>
     </div>

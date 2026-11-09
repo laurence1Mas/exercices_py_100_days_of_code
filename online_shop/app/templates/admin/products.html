@@ -12,7 +12,8 @@
                 <p>Retrouvez les produits actuellement proposés dans la boutique.</p>
             </div>
             <a class="admin-store-link" href="{{ url_for('shop') }}">
-                Voir la boutique <span aria-hidden="true">↗</span>
+                Voir la boutique
+                <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
             </a>
         </div>
 
@@ -49,7 +50,7 @@
             </div>
             {% else %}
             <div class="admin-empty">
-                <span class="empty-mark" aria-hidden="true">✳</span>
+                <i class="empty-mark fa-solid fa-sparkles" aria-hidden="true"></i>
                 <h3>Aucun produit</h3>
                 <p>Les produits du catalogue apparaîtront ici.</p>
             </div>

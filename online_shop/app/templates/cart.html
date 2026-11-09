@@ -19,7 +19,8 @@
                 </p>
             </div>
             <a class="cart-continue-link" href="{{ url_for('shop') }}">
-                <span aria-hidden="true">←</span> Continuer mes découvertes
+                <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+                Continuer mes découvertes
             </a>
         </div>
 
@@ -112,20 +113,21 @@
                     dans une prochaine étape.
                 </p>
                 <a class="cart-secure-note" href="{{ url_for('shop') }}">
-                    Revenir à la boutique <span aria-hidden="true">→</span>
+                    Revenir à la boutique <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
                 </a>
             </aside>
         </div>
         {% else %}
         <div class="cart-empty">
-            <span class="empty-mark" aria-hidden="true">⌑</span>
+            <i class="empty-mark fa-solid fa-basket-shopping" aria-hidden="true"></i>
             <h2>Votre panier attend sa première trouvaille.</h2>
             <p>
                 Parcourez la sélection Atelier et ajoutez les pièces qui vous plaisent.
                 Elles vous attendront ici.
             </p>
             <a class="btn btn-terracotta" href="{{ url_for('shop') }}">
-                Découvrir la boutique <span aria-hidden="true">↗</span>
+                Découvrir la boutique
+                <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
             </a>
         </div>
         {% endif %}
