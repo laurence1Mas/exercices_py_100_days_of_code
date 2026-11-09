@@ -10,6 +10,8 @@ Flask-SQLAlchemy, Flask-Login, Flask-WTF et Bootstrap.
   paniers et commandes.
 - Page d'accueil publique accessible à `/`.
 - Catalogue produits avec recherche, filtre par catégorie et fiches produit.
+- Panier persistant par client : ajout depuis les fiches produit, modification
+  des quantités et suppression avec vérification du stock.
 - Historique des commandes et détail privé des commandes du client connecté.
 - Inscription avec validation des champs et vérification de l'unicité de
   l'adresse e-mail (sans tenir compte de la casse).
@@ -17,9 +19,10 @@ Flask-SQLAlchemy, Flask-Login, Flask-WTF et Bootstrap.
 - Connexion, déconnexion protégée par CSRF et page de profil protégée.
 - Rôle `CUSTOMER` attribué par défaut aux nouveaux comptes.
 
-Le panier et le checkout ne sont pas encore implémentés ; les commandes visibles
-dans l'historique doivent donc être créées en base par une étape ultérieure ou
-par du code de test.
+Le checkout et le paiement ne sont pas encore implémentés ; le bouton de
+finalisation du panier reste donc désactivé. Les commandes visibles dans
+l'historique doivent être créées en base par une étape ultérieure ou par du code
+de test.
 
 ## Prérequis et lancement
 
@@ -87,6 +90,16 @@ définissez une clé privée dans l'environnement avant tout déploiement.
    lignes de commande. Les commandes apparaîtront automatiquement lorsque le
    checkout sera implémenté.
 
+### Panier
+
+1. `/cart/` exige une connexion et ne charge que les articles du client courant.
+2. Depuis une fiche produit en stock, le client ajoute une quantité ; le serveur
+   vérifie la disponibilité avant de créer ou mettre à jour la ligne du panier.
+3. Le client peut modifier la quantité ou retirer un article. Chaque action
+   vérifie que la ligne lui appartient et que le stock permet cette quantité.
+4. Le sous-total et le total provisoire sont recalculés à partir des prix
+   actuels du catalogue. Le checkout reste désactivé jusqu'à son implémentation.
+
 ## Structure du projet
 
 ```text
@@ -94,9 +107,9 @@ online_shop/
 ├── app/
 │   ├── admin/                 # Espace d'administration à développer
 │   ├── auth/                  # Formulaires et routes d'authentification
-│   ├── cart/                  # Panier à développer
-│   ├── orders/                # Commandes et paiement à développer
-│   ├── shop/                  # Catalogue à développer
+│   ├── cart/                  # Routes d'ajout et de gestion du panier
+│   ├── orders/                # Historique et détail des commandes
+│   ├── shop/                  # Routes du catalogue à développer
 │   ├── static/                # CSS, JavaScript et images
 │   ├── templates/             # Pages Jinja2
 │   ├── extensions.py          # Extensions Flask partagées
@@ -110,9 +123,8 @@ online_shop/
 ## Prochaines étapes
 
 1. Ajouter la gestion administrateur des produits et catégories.
-2. Implémenter le panier avec contrôle de stock.
-3. Ajouter le checkout, la simulation de paiement et la création de commandes.
-4. Compléter le suivi administrateur des commandes et les tests.
+2. Implémenter le checkout, la simulation de paiement et la création de commandes.
+3. Compléter le suivi administrateur des commandes et les tests.
 
 Le serveur lancé par `python run.py` est un serveur de développement. Utilisez
 un serveur WSGI adapté pour un déploiement en production.

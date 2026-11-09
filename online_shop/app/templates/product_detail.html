@@ -60,9 +60,22 @@
                         {% endif %}
                     </div>
 
+                    {% if product.stock > 0 %}
+                    <form class="product-add-form" method="post"
+                          action="{{ url_for('cart.add', product_id=product.id) }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <label for="quantity">Quantité</label>
+                        <input id="quantity" name="quantity" type="number" min="1"
+                               max="{{ product.stock }}" value="1" required>
+                        <button class="btn btn-terracotta" type="submit">
+                            Ajouter au panier <span aria-hidden="true">↗</span>
+                        </button>
+                    </form>
+                    {% else %}
                     <p class="product-detail-notice">
-                        La commande en ligne sera disponible prochainement.
+                        Cette pièce est momentanément indisponible.
                     </p>
+                    {% endif %}
                     <a class="btn btn-terracotta product-back-link"
                        href="{{ url_for('shop') }}">
                         <span aria-hidden="true">←</span> Retour à la boutique

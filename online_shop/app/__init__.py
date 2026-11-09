@@ -21,6 +21,7 @@ def create_app():
     # Importer les modèles pour les enregistrer auprès de SQLAlchemy
     from app import models
     from app.auth.routes import auth
+    from app.cart.routes import cart
     from app.orders.routes import orders
 
     @login_manager.user_loader
@@ -32,6 +33,7 @@ def create_app():
         db.create_all()
 
     app.register_blueprint(auth)
+    app.register_blueprint(cart)
     app.register_blueprint(orders)
 
     @app.get("/")
