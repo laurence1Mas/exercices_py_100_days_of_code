@@ -39,6 +39,8 @@
                     <a class="nav-link profile-link" href="{{ url_for('auth.profile') }}">
                         Mon espace
                     </a>
+                    <a class="nav-link profile-link"
+                       href="{{ url_for('orders.index') }}">Mes commandes</a>
                     <form method="post" action="{{ url_for('auth.logout') }}" class="ms-lg-2">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <button class="btn btn-dark shop-account-btn" type="submit">

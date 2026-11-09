@@ -10,14 +10,16 @@ Flask-SQLAlchemy, Flask-Login, Flask-WTF et Bootstrap.
   paniers et commandes.
 - Page d'accueil publique accessible à `/`.
 - Catalogue produits avec recherche, filtre par catégorie et fiches produit.
+- Historique des commandes et détail privé des commandes du client connecté.
 - Inscription avec validation des champs et vérification de l'unicité de
   l'adresse e-mail (sans tenir compte de la casse).
 - Hachage des mots de passe avec Werkzeug.
 - Connexion, déconnexion protégée par CSRF et page de profil protégée.
 - Rôle `CUSTOMER` attribué par défaut aux nouveaux comptes.
 
-Les modèles du panier et des commandes sont définis, mais ces fonctionnalités
-ne sont pas encore implémentées.
+Le panier et le checkout ne sont pas encore implémentés ; les commandes visibles
+dans l'historique doivent donc être créées en base par une étape ultérieure ou
+par du code de test.
 
 ## Prérequis et lancement
 
@@ -72,6 +74,19 @@ définissez une clé privée dans l'environnement avant tout déploiement.
 3. La page de profil exige une session authentifiée. La déconnexion se fait par
    une requête POST protégée par CSRF et ferme cette session.
 
+### Historique et détail des commandes
+
+1. `/orders/` exige une session utilisateur et ne charge que les commandes
+   associées à cet utilisateur, de la plus récente à la plus ancienne.
+2. Chaque ligne affiche la date, le nombre d'articles, le total ainsi que les
+   statuts de commande et de paiement.
+3. `/orders/<id>` vérifie à la fois l'identifiant de la commande et celui du
+   client connecté. Une commande inexistante ou appartenant à un autre client
+   renvoie une réponse 404.
+4. Le détail reprend les quantités et prix unitaires enregistrés dans les
+   lignes de commande. Les commandes apparaîtront automatiquement lorsque le
+   checkout sera implémenté.
+
 ## Structure du projet
 
 ```text
@@ -97,7 +112,7 @@ online_shop/
 1. Ajouter la gestion administrateur des produits et catégories.
 2. Implémenter le panier avec contrôle de stock.
 3. Ajouter le checkout, la simulation de paiement et la création de commandes.
-4. Créer le suivi des commandes, le tableau de bord et les tests.
+4. Compléter le suivi administrateur des commandes et les tests.
 
 Le serveur lancé par `python run.py` est un serveur de développement. Utilisez
 un serveur WSGI adapté pour un déploiement en production.
